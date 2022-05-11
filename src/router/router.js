@@ -38,6 +38,19 @@ export default new Router({
       }
     },
     {
+      path: '/perfectList',
+      name: 'PerfectList',
+      component: () => import(/* webpackChunkName: "stock_list" */ '@/views/Stock/PerfectList.vue'),
+      meta: {
+        requireAuth: true,
+        title: '奇文股票',
+        content: {
+          description:
+              '推荐股票'
+        }
+      }
+    },
+    {
       path: '/stock/detail/:stockNum',
       name: 'StockDetail',
       component: () => import(/* webpackChunkName: "stock_detail" */ '@/views/Stock/StockDetail.vue'),

@@ -1,6 +1,7 @@
 import { get,post } from './http'
 
 /* 获取股票列表 */
+export const getPerfectList = p => get('/stock/get/perfectList', p);
 export const getStockList = p => get('/stock/getstocklist', p);
 export const updateStockList = p => get('/stock/updatestocklist', p);
 export const updateStockDayInfo = p => get('/stock/updatestockdayinfo', p);
