@@ -49,6 +49,20 @@ export default new Router({
               '推荐股票'
         }
       }
+    },{
+      path: '/stockBoard',
+      name: 'stockBoard',
+      component: () => import(/* webpackChunkName: "stock_list" */ '@/views/Stock/StockBoard.vue'),
+      meta: {
+        showHeader:true,
+        showFooter:false,
+        requireAuth: false,
+        title: '奇文股票',
+        content: {
+          description:
+              '看板'
+        }
+      }
     },
     {
       path: '/stock/detail/:stockNum',

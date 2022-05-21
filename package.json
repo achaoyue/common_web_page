@@ -13,6 +13,7 @@
     "echarts": "^5.2.1",
     "element-ui": "^2.13.2",
     "js-cookie": "^2.2.1",
+    "moment": "^2.29.3",
     "qs": "^6.8.0",
     "sockjs-client": "^1.4.0",
     "stompjs": "^2.3.3",

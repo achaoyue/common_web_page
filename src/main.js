@@ -11,7 +11,10 @@ import '@/assets/styles/css/mediaScreen.styl'
 import '@/router/before.js'
 import 'element-ui/lib/theme-chalk/index.css'
 import element from './element.js'
+import moment from "moment"
 
+Vue.prototype.$moment = moment
+moment.locale('zh-cn')
 Vue.config.productionTip = false;
 Vue.use(element);
 

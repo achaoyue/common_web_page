@@ -21,7 +21,7 @@ export default {
     //  头部是否显示
     isHeaderShow() {
       let routerNameList = ['Error_404']
-      if (routerNameList.includes(this.$route.name)) {
+      if (routerNameList.includes(this.$route.name) || this.$route.meta.showHeader === false) {
         return false
       } else {
         return true
@@ -30,7 +30,7 @@ export default {
     //  底部是否显示
     isFooterShow() {
       let routerNameList = ['Stock']
-      if (routerNameList.includes(this.$route.name)) {
+      if (routerNameList.includes(this.$route.name) || this.$route.meta.showFooter == false) {
         return false
       } else {
         return true

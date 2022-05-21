@@ -1,7 +1,11 @@
 import { get,post } from './http'
 
 /* 获取股票列表 */
-export const getPerfectList = p => get('/stock/get/perfectList', p);
+// export const getPerfectList = p => get('/stock/get/perfectList', p);
+export const getPerfectList = p => get('api/stock/score/query', p);
+export const calcStockScore = p => get('api/stock/score/calc', p);
+export const bigThan = p => get('api/stock/bigThan', p);
+
 export const getStockList = p => get('/stock/getstocklist', p);
 export const updateStockList = p => get('/stock/updatestocklist', p);
 export const updateStockDayInfo = p => get('/stock/updatestockdayinfo', p);
