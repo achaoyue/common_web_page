@@ -23,10 +23,11 @@
           :key="index"
       >
         <div>{{index}},{{item}}</div>
-        <img width="100%" :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+getStockNum(item)+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>
+        <img @mousemove="mouthMove" width="100%" :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+getStockNum(item)+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>
         <br/>
         <div  class="pp" :style="{right: rightX+'px'}">
-
+        </div>
+        <div class="pp ppx" :style="{left: ppx+'px'}">
         </div>
         <div class="idx_op">
           <span @click="changeImg(item,'MACD')">macd</span>
@@ -50,6 +51,7 @@ export default {
   name: 'PerfectList',
   data() {
     return {
+      ppx:0,
       rightX:3,
       num:0,
       stockListStr:'',
@@ -62,6 +64,10 @@ export default {
 
   },
   methods: {
+    mouthMove(event){
+      console.log("mouth move",event.offsetX)
+      this.ppx = event.offsetX
+    },
     stockListChange(){
       console.log(this.stockListStr.split("\n"))
       this.stockList.length = 0;
@@ -97,10 +103,15 @@ export default {
 .pp{
   margin-right:8px;
   float: right;
-  position: relative;
+  position: absolute ;
   width: 1px;
   height: 80px;
-  bottom: 180px;
+  bottom: 130px;
+  border-left 3px solid #0000ff6b;
+}
+.ppx{
+  height: 180px;
+  bottom: 30px;
   border-left 1px solid #0000ff6b;
 }
 .el-input{
@@ -116,6 +127,7 @@ export default {
   display :inline-block
   max-width 300px
   border solid 1px black
+  position relative
 }
 .perfect_img img{
 

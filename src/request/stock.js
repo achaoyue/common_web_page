@@ -5,6 +5,8 @@ import { get,post } from './http'
 export const getPerfectList = p => get('api/stock/score/query', p);
 export const calcStockScore = p => get('api/stock/score/calc', p);
 export const bigThan = p => get('api/stock/bigThan', p);
+export const industryList = p => get('api/stock/industryList', p);
+export const getDayInfoList = p => get('api/stock/getDayInfoList', p);
 
 export const getStockList = p => get('/stock/getstocklist', p);
 export const updateStockList = p => get('/stock/updatestocklist', p);

@@ -3,17 +3,17 @@
     <div style="width: 100%">
       <div style="text-align: left">
         <el-row>
-          <el-col :span="5">
+          <el-col :span="4">
             <el-date-picker
                 v-model="date"
                 type="date"
-                @change="perfectList"
+                @change="perfectList(1)"
                 format="yyyy-MM-dd"
                 placeholder="选择日期">
             </el-date-picker>
           </el-col>
-          <el-col :span="5">
-            <el-select v-model="strategyId" @change="perfectList" placeholder="请选择">
+          <el-col :span="6">
+            <el-select v-model="strategyId" @change="perfectList(1)" placeholder="请选择">
               <el-option
                   v-for="item in indictors"
                   :key="item.value"
@@ -21,12 +21,20 @@
                   :value="item.value">
               </el-option>
             </el-select>
+            <el-select v-model="industry" filterable clearable allow-create @change="perfectList(1)" placeholder="请选择">
+              <el-option
+                  v-for="item in industryListData"
+                  :key="item"
+                  :label="item"
+                  :value="item">
+              </el-option>
+            </el-select>
           </el-col>
           <el-col :span="5">
             <el-input v-model="stockNum" placeholder="股票编码"></el-input>
           </el-col>
           <el-col :span="6">
-            <el-button type="warning" @click="perfectList">查询</el-button>
+            <el-button type="warning" @click="perfectList(1)">查询</el-button>
             <el-button type="warning" @click="calc">开始计算</el-button>
           </el-col>
         </el-row>
@@ -36,16 +44,18 @@
           v-for="(item, index) in perfectStockList"
           :key="index"
       >
-        <div>{{index}},{{item.stockNum}},{{item.score}},{{item.scoreDesc}}</div>
-        <img width="100%" :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+getStockNum(item)+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(item.type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>
+        <div>{{index}},<span @click="copyNum(item.stockNum,this)">{{item.stockNum}}</span>,<span @click="changeIndustry(item.industry)">{{item.industry}}</span>,{{item.score}},{{item.scoreDesc}}</div>
+        <img @mousemove="mouthMove" width="100%" :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+getStockNum(item)+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(item.type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>
         <div class="pp" :style="{right: rightX+'px'}">
-
+        </div>
+        <div class="pp ppx" :style="{left: ppx+'px'}">
         </div>
         <div class="idx_op">
           <span @click="changeImg(item,'MACD')">macd</span>
           <span @click="changeImg(item,'KDJ')">kdj</span>
           <span @click="changeImg(item,'CCI')">cci</span>
-          <span>{{item.date}}</span>
+          <span>{{item.upDownRange}}</span>
+          <span><a target="_blank" :href="'http://quote.eastmoney.com/concept/'+getStockNum2(item)+'.html#'">详情</a></span>
         </div>
       </div>
       <el-pagination
@@ -67,7 +77,8 @@
 import {
   getPerfectList,
   calcStockScore,
-  bigThan
+  bigThan,
+    industryList
 } from '@/request/stock.js'
 import moment from "moment";
 
@@ -76,11 +87,18 @@ export default {
   data() {
     return {
       rightX:3,
+      ppx:0,
       indictors:[
         {value:'indicatorCalculator',label:'指标排序'},
+        {value:'indicatorCalculator2',label:'指标排序2'},
         {value:'beautifulCalculator',label:'完美曲线'},
+        {value:'threeDaysUpCalculator',label:'三日联涨'},
+        {value:'thirtyDaysUpCalculator',label:'三十日新高'},
+        {value:'maRiseUpCalculator',label:'ma齐头向上'},
+        {value:'topRiseUpCalculator',label:'当日涨幅'},
         {value:'amplitudeCalculator',label:'幅度计算排序'}
       ],
+      industry:'',
       stockNum:'',
       strategyId:"indicatorCalculator",
       date:new Date(),
@@ -88,15 +106,39 @@ export default {
       perfectStockList:[],
       pageData: {
         currentPage: 1, //  页码
-        pageCount: 20, //  页大小
+        pageCount: 100, //  页大小
         total: 0
       },
+      industryListData:[]
     }
   },
   created() {
     this.perfectList()
+    this.initIndustryList();
   },
   methods: {
+    mouthMove(event){
+      console.log("mouth move",event.offsetX)
+      this.ppx = event.offsetX
+    },
+    initIndustryList(){
+      industryList().then((resp)=>{
+        let data = resp.data.sort(
+            function compareFunction(param1, param2) {
+              return param1.localeCompare(param2,"zh");
+            }
+        );
+        this.industryListData = data;
+      })
+    },
+    changeIndustry(industry){
+      this.industry = industry;
+      this.perfectList(1);
+    },
+    copyNum(stockNum){
+      navigator.clipboard.writeText(stockNum);
+      this.$message('copy ok '+stockNum);
+    },
     handleCurrentChange(currentPage){
       this.pageData.currentPage = currentPage;
       this.perfectList()
@@ -112,17 +154,21 @@ export default {
         pageSize:100};
       calcStockScore(param);
     },
-    perfectList(){
+    perfectList(clearPage){
       bigThan({date:moment(this.date).format("YYYY-MM-DD")}).then((resp)=>{
         this.rightX = 3.7+ parseInt(resp.data) * 4.23;
       })
       let param = {date:moment(this.date).format("YYYY-MM-DD"),strategyId:this.strategyId,pageSize:100};
+      if (clearPage){
+        this.pageData.currentPage = 1;
+      }
+      param.industry = this.industry;
       param.pageSize = this.pageData.pageCount;
       param.pageNum = this.pageData.currentPage;
       getPerfectList(param).then((resp)=>{
         console.log(resp)
         resp.data.forEach(e=>{
-          e.type = "CCI";
+          e.type = "KDJ";
         })
         this.perfectStockList = resp.data;
         this.pageData.total = resp.total;
@@ -138,6 +184,13 @@ export default {
         return "0."+stock.stockNum;
       }else {
         return "0."+stock.stockNum;
+      }
+    },
+    getStockNum2(stock){
+      if (stock.stockNum.startsWith("6")){
+        return "sh"+stock.stockNum;
+      }else {
+        return "sz"+stock.stockNum;
       }
     },
     changeImg(stock, type){
@@ -159,6 +212,11 @@ export default {
   height: 80px;
   bottom: 130px;
   border-left 3px solid #0000ff6b;
+}
+.ppx{
+  height: 180px;
+  bottom: 30px;
+  border-left 1px solid #0000ff6b;
 }
 .perfect_list{
   background-color:#f9ebe8e6

@@ -2,6 +2,7 @@ import axios from 'axios'
 import globalFunction from '@/globalFunction.js'
 import router from '@/router/router'
 import { MessageBox, Message } from 'element-ui';
+import {stringify} from "qs";
 
 // 登录提醒
 const loginTip = function() {
@@ -81,7 +82,10 @@ export function get(url, params) {
   return new Promise((resolve, reject) => {
     axios
       .get(url, {
-        params: params
+        params: params,
+        paramsSerializer: params => {
+          return stringify(params, { indices: false })
+        }
       })
       .then((res) => {
         resolve(res.data)

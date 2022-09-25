@@ -10,7 +10,7 @@ export default new Router({
     {
       path: '/',
       name: 'Home',
-      redirect: { name: 'Stock' }
+      redirect: { name: 'PerfectList' }
     },
     {
       path: '/login',
@@ -61,6 +61,20 @@ export default new Router({
         content: {
           description:
               '看板'
+        }
+      }
+    },{
+      path: '/kChart',
+      name: 'KChart',
+      component: () => import(/* webpackChunkName: "stock_list" */ '@/views/Stock/KChart.vue'),
+      meta: {
+        showHeader:true,
+        showFooter:false,
+        requireAuth: false,
+        title: 'K线图',
+        content: {
+          description:
+              'k线'
         }
       }
     },
