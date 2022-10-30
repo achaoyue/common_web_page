@@ -2,42 +2,36 @@
   <div class="perfect_list">
     <div style="width: 100%">
       <div style="text-align: left">
-        <el-row>
-          <el-col :span="4">
-            <el-date-picker
-                v-model="date"
-                type="date"
-                @change="perfectList(1)"
-                format="yyyy-MM-dd"
-                placeholder="选择日期">
-            </el-date-picker>
-          </el-col>
-          <el-col :span="6">
-            <el-select v-model="strategyId" @change="perfectList(1)" placeholder="请选择">
-              <el-option
-                  v-for="item in indictors"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-              </el-option>
-            </el-select>
-            <el-select v-model="industry" filterable clearable allow-create @change="perfectList(1)" placeholder="请选择">
-              <el-option
-                  v-for="item in industryListData"
-                  :key="item"
-                  :label="item"
-                  :value="item">
-              </el-option>
-            </el-select>
-          </el-col>
-          <el-col :span="5">
-            <el-input v-model="stockNum" placeholder="股票编码"></el-input>
-          </el-col>
-          <el-col :span="6">
-            <el-button type="warning" @click="perfectList(1)">查询</el-button>
-            <el-button type="warning" @click="calc">开始计算</el-button>
-          </el-col>
-        </el-row>
+        <el-button @click="crowStock">抓取股票</el-button>
+        <el-button @click="crowStockDayInfo">抓取每日信息</el-button>
+      </div>
+      <div style="text-align: left">
+        <el-date-picker
+            v-model="date"
+            type="date"
+            @change="perfectList(1)"
+            format="yyyy-MM-dd"
+            placeholder="选择日期">
+        </el-date-picker>
+        <el-select v-model="strategyId" @change="perfectList(1)" placeholder="请选择">
+          <el-option
+              v-for="item in indictors"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+          </el-option>
+        </el-select>
+        <el-select v-model="industry" filterable clearable allow-create @change="perfectList(1)" placeholder="请选择">
+          <el-option
+              v-for="item in industryListData"
+              :key="item"
+              :label="item"
+              :value="item">
+          </el-option>
+        </el-select>
+        <el-input v-model="stockNum" placeholder="股票编码"></el-input>
+        <el-button type="warning" @click="perfectList(1)">查询</el-button>
+        <el-button type="warning" @click="calc">开始计算</el-button>
       </div>
       <div
           class="perfect_img"
@@ -69,7 +63,7 @@
           @size-change="handleSizeChange"
       ></el-pagination>
     </div>
-
+    <div style="position:absolute; left: 0px;top: 50px; background-color: red">aasdfasdf</div>
   </div>
 </template>
 
@@ -78,7 +72,9 @@ import {
   getPerfectList,
   calcStockScore,
   bigThan,
-    industryList
+    industryList,
+    crowStock,
+    crowStockDayInfo,
 } from '@/request/stock.js'
 import moment from "moment";
 
@@ -91,6 +87,8 @@ export default {
       indictors:[
         {value:'indicatorCalculator',label:'指标排序'},
         {value:'indicatorCalculator2',label:'指标排序2'},
+        {value:'indicatorCalculator3',label:'指标排序3'},
+        {value:'LH_RL_Calculator',label:'趋势计算'},
         {value:'beautifulCalculator',label:'完美曲线'},
         {value:'threeDaysUpCalculator',label:'三日联涨'},
         {value:'thirtyDaysUpCalculator',label:'三十日新高'},
@@ -196,6 +194,16 @@ export default {
     changeImg(stock, type){
       stock.type = type;
       console.log(type)
+    },
+    crowStock(){
+      crowStock().then((resp)=>{
+        this.$message.success("ok"+JSON.stringify(resp.data))
+      })
+    },
+    crowStockDayInfo(){
+      crowStockDayInfo({stockNum:''}).then((resp)=>{
+        this.$message.success("ok"+JSON.stringify(resp.data))
+      })
     }
   }
 }

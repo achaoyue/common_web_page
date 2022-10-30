@@ -1,6 +1,6 @@
 module.exports = {
   // 选项...
-  publicPath: '/',
+  publicPath: 'static/',
 
   //是否开启eslint校验
   lintOnSave: false,
@@ -11,7 +11,7 @@ module.exports = {
     port: 8081,
     proxy: { //配置代理，解决跨域请求后台数据的问题
       '/api': {
-        target: 'http://localhost:8080', //后台接口
+        target: 'http://localhost:8080/api', //后台接口
         ws: true, //是否跨域
         changeOrigin: true,
         pathRewrite: {
