@@ -85,6 +85,7 @@ export default {
       rightX:3,
       ppx:0,
       indictors:[
+        {value:'M_TEST',label:'我的测试'},
         {value:'indicatorCalculator',label:'指标排序'},
         {value:'indicatorCalculator2',label:'指标排序2'},
         {value:'indicatorCalculator3',label:'指标排序3'},
