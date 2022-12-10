@@ -29,16 +29,16 @@ export default {
      * 获取用户信息
      */
     getUserInfo(context) {
-      return checkUserLoginInfo().then((res) => {
-        if (res.success) {
-          // 改变登录状态
-          context.commit("changeIsLogin", res.success);
-          // 保存用户信息
-          context.commit("changeUserInfoObj", res.data); 
-        } else {
-          context.commit("changeIsLogin", res.success);
-        }
-      });
+      // return checkUserLoginInfo().then((res) => {
+      //   if (res.success) {
+      //     // 改变登录状态
+      //     context.commit("changeIsLogin", res.success);
+      //     // 保存用户信息
+      //     context.commit("changeUserInfoObj", res.data);
+      //   } else {
+      //     context.commit("changeIsLogin", res.success);
+      //   }
+      // });
     }
   }
 }

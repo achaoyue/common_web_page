@@ -3,27 +3,11 @@
     <img class="logo" :src="logoUrl" @click="$router.push({ name: 'Home' })" />
     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" router>
       <!-- <el-menu-item index="Home" :route="{ name: 'Home' }">首页</el-menu-item> -->
-      <el-menu-item index="Stock" :route="{ name: 'Stock' }">股票</el-menu-item>
+<!--      <el-menu-item index="Stock" :route="{ name: 'Stock' }">股票</el-menu-item>-->
       <!-- <div class="el-menu-item"><a href="https://www.qiwenshare.com/topic/detail/6/24" target="_blank">帮助文档</a></div> -->
       <!-- 为了和其他菜单样式保持一致，请一定要添加类名 el-menu-item -->
       
-      <el-select
-        v-model="value"
-        class="search-input"
-        filterable
-        remote
-        reserve-keyword
-        placeholder="查询股票"
-        :remote-method="queryStockByFilter"
-        @change="inputChange"
-      >
-        <el-option
-          v-for="item in stockList"
-          :key="item.stockNum"
-          :label="item.stockName"
-          :value="item.stockNum"
-        ></el-option>
-      </el-select>
+
       <div class="el-menu-item exit" @click="exitButton()" v-show="isLogin">
         退出
       </div>
@@ -31,7 +15,7 @@
       <el-menu-item class="login" index="Login" :route="{ name: 'Login' }" v-show="!isLogin">登录</el-menu-item>
       <!-- 生产环境 -->
       <el-menu-item class="register" v-if="isProductEnv" v-show="!isLogin">
-        <a href="https://www.qiwenshare.com/register" target="_blank">注册</a>
+        <a href="" target="_blank">注册</a>
       </el-menu-item>
       <!-- 开发环境 -->
       <el-menu-item class="register" v-else v-show="!isLogin" index="Register" :route="{ name: 'Register' }"
@@ -43,15 +27,12 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import {
-  getStockList
-} from "@/request/stock.js";
 
 export default {
   name: 'Header',
   data() {
     return {
-      logoUrl: require('@/assets/images/common/logo_header.png'),
+      logoUrl: require('@/assets/images/common/youcai.png'),
       stockList : [],
       stockNum : "",
       value: [],
@@ -68,7 +49,7 @@ export default {
     }
   },
   mounted(){
-    this.queryStockByFilter("");
+
   },
   methods: {
     /**
@@ -77,10 +58,10 @@ export default {
      */
     exitButton() {
       this.$message.success('退出登录成功！')
-      this.$store.dispatch('getUserInfo').then(() => {
-        this.removeCookies('token')
-        this.$router.push({ path: '/login' })
-      })
+      // this.$store.dispatch('getUserInfo').then(() => {
+      //   this.removeCookies('token')
+      //   this.$router.push({ path: '/login' })
+      // })
     },
     inputChange(stockNum) {
       window.location.href = "/stock/detail/" + stockNum;
@@ -88,20 +69,7 @@ export default {
       //   path: "/stock/detail/" + stockNum,
       // });
       
-    },
-    queryStockByFilter(query) {
-      var data1 = {};
-      data1.key = query; // "sh000001";
-      data1.currentPage = 0;
-      data1.pageCount = 0;
-      getStockList(data1).then((res) => {
-        if (res.success) {
-          this.stockList = res.data.list;
-        } else {
-          this.$message.error(res.message);
-        }
-      });
-    },
+    }
   }
 }
 </script>

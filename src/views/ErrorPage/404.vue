@@ -1,7 +1,9 @@
 <template>
   <div class="error-404-wrapper">
     <h2 class="title">您的页面飞走了……</h2>
-    <img :src="error_404_img" />
+    <div style="text-align: center">
+      <img :src="error_404_img" />
+    </div>
   </div>
 </template>
 

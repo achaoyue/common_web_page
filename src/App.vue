@@ -46,11 +46,7 @@ export default {
 @import '~@/assets/styles/varibles.styl';
 
 #app {
-  height: 100%;
-  overflow-x: hidden;
   -webkit-text-size-adjust: none;
-  overflow-y: auto;
-
   >>> .el-backtop {
     background-color: $Success;
     color: #fff;
@@ -58,11 +54,9 @@ export default {
   }
 
   .main-content {
-    flex: 1;
     width: 90%;
-    min-height: calc(100vh - 70px);
+    min-height: calc(100vh - 198px);
     margin: 0 auto;
-    //display: flex;
   }
 }
 </style>
