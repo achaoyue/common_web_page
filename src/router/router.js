@@ -81,6 +81,21 @@ export default new Router({
       }
     },
     {
+      path: '/dataBoard',
+      name: 'dataBoard',
+      component: () => import(/* webpackChunkName: "stock_list" */ '@/views/Stock/DataBoard.vue'),
+      meta: {
+        showHeader:true,
+        showFooter:false,
+        requireAuth: false,
+        title: '大盘',
+        content: {
+          description:
+              '大盘数据'
+        }
+      }
+    },
+    {
       path: '/stock/detail/:stockNum',
       name: 'StockDetail',
       component: () => import(/* webpackChunkName: "stock_detail" */ '@/views/Stock/StockDetail.vue'),

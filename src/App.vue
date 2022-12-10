@@ -62,7 +62,7 @@ export default {
     width: 90%;
     min-height: calc(100vh - 70px);
     margin: 0 auto;
-    display: flex;
+    //display: flex;
   }
 }
 </style>
