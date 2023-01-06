@@ -10,6 +10,7 @@ export const getDayInfoList = p => get('stock/getDayInfoList', p);
 export const crowStock = p => get('stock/crowStock', p);
 export const crowStockDayInfo = p => get('stock/crowStockDayInfo', p);
 export const getDataBoard = p => get('stock/getDataBoard', p);
+export const editFavorite = p => post('stock/editFavorite', p);
 
 export const getStockList = p => get('/stock/getstocklist', p);
 export const updateStockList = p => get('/stock/updatestocklist', p);

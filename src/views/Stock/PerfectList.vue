@@ -39,7 +39,7 @@
           :key="index"
       >
         <div>{{index}},<span @click="copyNum(item.stockNum,this)">{{item.stockNum}}</span>,<span @click="changeIndustry(item.industry)">{{item.industry}}</span>,{{item.score}},{{item.scoreDesc}}</div>
-        <img @mousemove="mouthMove" width="100%" :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+getStockNum(item)+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(item.type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>
+        <img @mousemove="mouthMove(item.stockNum)"  @mouseout="mouseOut" width="100%" :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+getStockNum(item)+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(item.type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>
         <div class="pp" :style="{right: rightX+'px'}">
         </div>
         <div class="pp ppx" :style="{left: ppx+'px'}">
@@ -50,6 +50,7 @@
           <span @click="changeImg(item,'CCI')">cci</span>
           <span>{{item.upDownRange}}</span>
           <span><a target="_blank" :href="'http://quote.eastmoney.com/concept/'+getStockNum2(item)+'.html#'">详情</a></span>
+          <FavoriteSpan :stock-num="item.stockNum" :is-favorite="item.favorite" :change="(op)=>{item.favorite = op}"/>
         </div>
       </div>
       <el-pagination
@@ -64,6 +65,8 @@
       ></el-pagination>
     </div>
     <div style="position:absolute; left: 0px;top: 50px; background-color: red">aasdfasdf</div>
+
+    <StockPop :stockNum="selectStockNum" :type="'CCI'" />
   </div>
 </template>
 
@@ -77,6 +80,8 @@ import {
     crowStockDayInfo,
 } from '@/request/stock.js'
 import moment from "moment";
+import StockPop from "@/views/Stock/components/StockPop";
+import FavoriteSpan from "@/views/Stock/components/FavoriteSpan";
 
 export default {
   name: 'PerfectList',
@@ -99,7 +104,7 @@ export default {
       ],
       industry:'',
       stockNum:'',
-      strategyId:"indicatorCalculator",
+      strategyId:"indicatorCalculator2",
       date:new Date(),
       a:123,
       perfectStockList:[],
@@ -108,17 +113,26 @@ export default {
         pageCount: 100, //  页大小
         total: 0
       },
-      industryListData:[]
+      industryListData:[],
+      selectStockNum:''
     }
+  },
+  components:{
+    StockPop,
+    FavoriteSpan
   },
   created() {
     this.perfectList()
     this.initIndustryList();
   },
   methods: {
-    mouthMove(event){
-      console.log("mouth move",event.offsetX)
-      this.ppx = event.offsetX
+    mouthMove(stockNum){
+      // console.log("mouth move",event.offsetX)
+      this.ppx = event.offsetX-5
+      this.selectStockNum = stockNum;
+    },
+    mouseOut() {
+      this.selectStockNum = '';
     },
     initIndustryList(){
       industryList().then((resp)=>{
