@@ -64,7 +64,6 @@
           @size-change="handleSizeChange"
       ></el-pagination>
     </div>
-    <div style="position:absolute; left: 0px;top: 50px; background-color: red">aasdfasdf</div>
 
     <StockPop :stockNum="selectStockNum" :type="'CCI'" />
   </div>
@@ -127,12 +126,11 @@ export default {
   },
   methods: {
     mouthMove(stockNum){
-      // console.log("mouth move",event.offsetX)
-      this.ppx = event.offsetX-5
+      this.ppx = event.offsetX
       this.selectStockNum = stockNum;
     },
     mouseOut() {
-      this.selectStockNum = '';
+      //this.selectStockNum = '';
     },
     initIndustryList(){
       industryList().then((resp)=>{

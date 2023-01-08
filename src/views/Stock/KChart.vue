@@ -11,7 +11,7 @@
         </el-input>
       </span>
 
-      <div id="k-chart" style="width: 100%;height: 1000px; display:none"></div>
+      <div id="k-chart" style="width: 100%;height: 1000px; display:none1"></div>
 
       <el-button @click="drawLine">绘制</el-button>
       <el-button @click="clc">计算</el-button>

@@ -22,11 +22,18 @@ export default {
   },
   mounted() {
     document.onkeydown = (event)=>{
-      if (this.keyPressed == 'a'){
-        this.keyPressed = '';
-      }else{
-        this.keyPressed = event.key;
+      if (event.key == 'a'){
+        if (this.keyPressed == 'a'){
+          this.keyPressed = '';
+        }else {
+          this.keyPressed = 'a';
+        }
       }
+    }
+  },
+  watch:{
+    stockNum (oldVal,newVal){
+      console.log(oldVal,newVal)
     }
   },
   computed:{

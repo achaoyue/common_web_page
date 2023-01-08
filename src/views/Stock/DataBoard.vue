@@ -17,37 +17,41 @@
       </span>
     </div>
     <h2>收藏</h2>
-    <span class="stock-img favorite_stock" v-for="(val) in this.board.favoriteStockList" :key="val.stockNum">
+    <span class="stock-img favorite_stock" v-for="(val) in this.board.favoriteStockList" :key="val.stockNum+'F'">
       <div>
         <span @click="copyNum(val.stockNum)">{{val.stockName}}</span> {{val.industry}} {{val.upDownRange}}
         <FavoriteSpan :stock-num="val.stockNum" :is-favorite="val.favorite" :change="(op)=>{changeFavorite(val,op)}"/>
         <img @click="changeType"  @mousemove="mouseOver(val.stockNum)" @mouseout="mouseOut" :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+getStockNum(val)+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>
+        <div class="pp ppx" :style="{left: ppx+'px'}"></div>
       </div>
     </span>
     <Br/>
     <h2>各行业龙头</h2>
-    <div class="stock-img val_top_stock" v-for="(val,key) in this.board.industryTopMap" :key="key">
+    <div class="stock-img val_top_stock" v-for="(val,key) in this.board.industryTopMap" :key="key+'T'">
       <div>
         行业:{{key}} 股票:<span @click="copyNum(val.stockNum)">{{val.stockName}}</span>,{{val.upDownRange}}
         <FavoriteSpan :stock-num="val.stockNum" :is-favorite="val.favorite" :change="(op)=>{changeFavorite(val,op)}"/>
         <img @mousemove="mouseOver(val.stockNum)" @mouseout="mouseOut" @click="changeType" :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+getStockNum(val)+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>
+        <div class="pp ppx" :style="{left: ppx+'px'}"></div>
       </div>
     </div>
     <Br/>
     <h2>涨幅榜</h2>
-    <span class="stock-img range_top_stock" v-for="(val) in this.board.topUpStockList" :key="val.stockNum">
+    <span class="stock-img range_top_stock" v-for="(val) in this.board.topUpStockList" :key="val.stockNum+'H'">
       <div>
         <span @click="copyNum(val.stockNum)">{{val.stockName}}</span> {{val.industry}} {{val.upDownRange}}
         <FavoriteSpan :stock-num="val.stockNum" :is-favorite="val.favorite" :change="(op)=>{changeFavorite(val,op)}"/>
         <img @click="changeType" @mousemove="mouseOver(val.stockNum)" @mouseout="mouseOut"  :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+getStockNum(val)+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>
+        <div class="pp ppx" :style="{left: ppx+'px'}"></div>
       </div>
     </span>
     <h2>跌幅榜</h2>
-    <span class="stock-img range_down_stock" v-for="(val) in this.board.topDownStockList" :key="val.stockNum">
+    <span class="stock-img range_down_stock" v-for="(val) in this.board.topDownStockList" :key="val.stockNum+'L'">
       <div>
         <span @click="copyNum(val.stockNum)">{{val.stockName}}</span> {{val.industry}} {{val.upDownRange}}
         <FavoriteSpan :stock-num="val.stockNum" :is-favorite="val.favorite" :change="(op)=>{changeFavorite(val,op)}"/>
         <img @click="changeType"  @mousemove="mouseOver(val.stockNum)" @mouseout="mouseOut" :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+getStockNum(val)+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>
+        <div class="pp ppx" :style="{left: ppx+'px'}"></div>
       </div>
     </span>
 <!--    <div v-if="selectStockNum != ''" class="pop-span">-->
@@ -67,6 +71,7 @@ import FavoriteSpan from "@/views/Stock/components/FavoriteSpan";
 export default {
   data(){
     return {
+      ppx:1,
       type:"CCI",
       board:{
         upSize:0,
@@ -117,18 +122,10 @@ export default {
       this.type = types[idx%types.length]
     },
     mouseOut(){
-      this.selectStockNum = "";
+      //this.selectStockNum = "";
     },
     mouseOver(stockNum){
-      // if (stockNum.startsWith("6")){
-      //   this.selectStockNum = "1."+stockNum;
-      // }else if (stockNum.startsWith("3")){
-      //   this.selectStockNum = "0."+stockNum;
-      // }else if (stockNum.startsWith("0")){
-      //   this.selectStockNum = "0."+stockNum;
-      // }else {
-      //   this.selectStockNum = "0."+stockNum;
-      // }
+      this.ppx = event.offsetX;
       this.selectStockNum = stockNum;
     },
     changeFavorite(stock,op){
@@ -147,6 +144,7 @@ export default {
   word-break: break-all;
   white-space: break-spaces;
   width: 300px;
+  position: relative;
 }
 .stock-img img{
   width: 100%;
@@ -174,5 +172,19 @@ export default {
 }
 .favorite_stock{
   background-color: #ff5a1e;
+}
+.pp{
+  margin-right:8px;
+  float: right;
+  position: absolute ;
+  width: 1px;
+  height: 80px;
+  bottom: 130px;
+  border-left: 3px solid #0000ff6b;
+}
+.ppx{
+  height: 200px;
+  bottom: 0px;
+  border-left: 1px solid #0000ff6b;
 }
 </style>
