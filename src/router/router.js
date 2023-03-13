@@ -19,7 +19,7 @@ export default new Router({
     {
       path: '/',
       name: 'Home',
-      redirect: { name: 'Test' }
+      redirect: { name: 'PerfectList' }
     },
     {
       path: '/test',
@@ -50,6 +50,17 @@ export default new Router({
         showFooter:true,
         requireAuth: false,
         title: '股票概览'
+      }
+    },
+    {
+      path: '/noticeHistory',
+      name: 'NoticeHistory',
+      component: () => import(/* webpackChunkName: "login" */ '@/views/page/NoticeHistory'),
+      meta: {
+        showHeader:true,
+        showFooter:true,
+        requireAuth: false,
+        title: '异动通知历史'
       }
     },
 

@@ -1,11 +1,16 @@
 <template>
   <div class="perfect_list">
     <div style="width: 100%">
-      <div style="text-align: left;display: none">
+      <div style="text-align: left;display: noneq">
         <el-button @click="crowStock">抓取股票</el-button>
         <el-button @click="crowStockDayInfo">抓取每日信息</el-button>
       </div>
       <div style="text-align: left">
+        <div>
+          <span class="industry-item" v-for="(val) in this.UpDownSizeIndustry" :key="val.industry">
+            <span @click="changeIndustry(val.industry)" :style="{backgroundColor:val.industry==industry?'red':''}">{{val.industry}}</span> 上涨:{{val.upSize}},下跌:{{val.downSize}}
+          </span>
+        </div>
         <el-date-picker
             v-model="date"
             type="date"
@@ -77,6 +82,7 @@ import {
     industryList,
     crowStock,
     crowStockDayInfo,
+  queryUpDownSizeByIndustry
 } from '@/request/stock.js'
 import moment from "moment";
 import StockPop from "@/views/components/StockPop";
@@ -113,7 +119,8 @@ export default {
         total: 0
       },
       industryListData:[],
-      selectStockNum:''
+      selectStockNum:'',
+      UpDownSizeIndustry:[]
     }
   },
   components:{
@@ -123,6 +130,7 @@ export default {
   created() {
     this.perfectList()
     this.initIndustryList();
+    this.initUpDownSizeByIndustry();
   },
   methods: {
     mouthMove(stockNum){
@@ -140,6 +148,11 @@ export default {
             }
         );
         this.industryListData = data;
+      })
+    },
+    initUpDownSizeByIndustry(){
+      queryUpDownSizeByIndustry().then((resp)=>{
+        this.UpDownSizeIndustry = resp.data
       })
     },
     changeIndustry(industry){
@@ -179,7 +192,7 @@ export default {
       getPerfectList(param).then((resp)=>{
         console.log(resp)
         resp.data.forEach(e=>{
-          e.type = "KDJ";
+          e.type = "MACD";
         })
         this.perfectStockList = resp.data;
         this.pageData.total = resp.total;
@@ -267,4 +280,15 @@ export default {
       margin :1px 3px 0px;
       padding 0px 3px 0px;
     }
+.industry-item{
+  border: #e0b1ff 1px solid;
+  margin-right: 5px;
+  margin-bottom: 3px;
+  padding: 3px 10px 3px 0px;
+  display: inline-block;
+}
+.industry-item > span{
+  background-color: #ffc9c9;
+  padding: 3px 0px 3px 0px;
+}
 </style>

@@ -3,7 +3,7 @@ module.exports = {
   publicPath: 'static/',
 
   //是否开启eslint校验
-  lintOnSave: false,
+  lintOnSave: true,
 
   devServer: {
     disableHostCheck: true,

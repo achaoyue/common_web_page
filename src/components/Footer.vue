@@ -6,7 +6,7 @@
         <span>有菜科技 版权所有</span>
         <span class="split">|</span>
         <span>
-          <a class="link" style="color: white" href="" target="_blank">陕ICP备1234567890号</a>
+          <a class="link" style="color: white" href="https://beian.miit.gov.cn" target="_blank">京ICP备17012778号-1</a>
         </span>
         <p class="tip-website">
           为获得最佳浏览体验，建议使用IE11、FireFox50.5、Chrome51.0及以上版本的浏览器
@@ -21,7 +21,7 @@ export default {
   name: 'Footer',
   data() {
     return {
-      logoUrl: require('@/assets/images/common/youcai.png')
+      logoUrl: require('@/assets/images/common/lelefans.png')
     }
   }
 }

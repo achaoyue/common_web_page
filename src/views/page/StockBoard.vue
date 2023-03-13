@@ -131,7 +131,6 @@ export default {
           arr.sort();
         }
         this.tradeDays = arr;
-        console.log(this.tradeDays )
       })
     },
     getRightPx(stock){
@@ -143,7 +142,7 @@ export default {
       date = moment(new Date(date)).format("YYYY-MM-DD");
       let idx = 0;
       for (let day of this.tradeDays){
-        if (day.localeCompare(date) > -1){
+        if (day.localeCompare(date) > 0){
           idx ++;
         }
       }

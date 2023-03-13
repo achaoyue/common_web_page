@@ -1,5 +1,6 @@
 <template>
   <div v-if="stockNum != '' && keyPressed != 'a' " class="pop-span">
+    <div style="text-align: center;width: 100%;background-color: #6f42c1" @click="closePanel()">close</div>
     <img :src="'https://webquotepic.eastmoney.com/GetPic.aspx?imageType=r&type=&token=44c9d251add88e27b65ed86506f6e5da&nid='+selectStockNum+'&timespan=1672321137'"/>
     <img :src="'https://webquotepic.eastmoney.com/GetPic.aspx?imageType=t&type=M4&token=44c9d251add88e27b65ed86506f6e5da&nid='+selectStockNum+'&timespan=1672584931'"/>
     <img :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+selectStockNum+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>
@@ -40,30 +41,30 @@ export default {
     }
   },
   watch:{
-    stockNum (oldVal,newVal){
-      if (!newVal){
-        return;
-      }
-      let now = new Date();
-      let thirtyDayAgo = new Date(now.getTime() - 100*1000*60*60*24);
-      let stock = this.stockDayInfoMap[newVal]
-      if (stock == null) {
-        let param = {
-          stockNums:[newVal],
-          endTime:moment(now).format("YYYY-MM-DD"),
-          startTime:moment(thirtyDayAgo).format("YYYY-MM-DD")
-        }
-        getDayInfoList(param).then((resp)=>{
-            console.log(resp.data)
-            this.stockDayInfoMap = Object.assign(this.stockDayInfoMap,resp.data);
-            this.stockDayInfo = this.stockDayInfoMap[newVal];
-        })
-      }else{
-        this.stockDayInfo = this.stockDayInfoMap[newVal];
-      }
-    },
+    // stockNum (oldVal,newVal){
+    //   if (!newVal){
+    //     return;
+    //   }
+    //   let now = new Date();
+    //   let thirtyDayAgo = new Date(now.getTime() - 100*1000*60*60*24);
+    //   let stock = this.stockDayInfoMap[newVal]
+    //   if (stock == null) {
+    //     let param = {
+    //       stockNums:[newVal],
+    //       endTime:moment(now).format("YYYY-MM-DD"),
+    //       startTime:moment(thirtyDayAgo).format("YYYY-MM-DD")
+    //     }
+    //     getDayInfoList(param).then((resp)=>{
+    //
+    //         this.stockDayInfoMap = Object.assign(this.stockDayInfoMap,resp.data);
+    //         this.stockDayInfo = this.stockDayInfoMap[newVal];
+    //     })
+    //   }else{
+    //     this.stockDayInfo = this.stockDayInfoMap[newVal];
+    //   }
+    // },
     stockDayInfo(){
-      console.log(this.stockDayInfo)
+
     }
   },
   computed:{
@@ -77,6 +78,11 @@ export default {
       }else {
         return "0."+this.stockNum;
       }
+    }
+  },
+  methods:{
+    closePanel(){
+      this.keyPressed = "a"
     }
   }
 }
