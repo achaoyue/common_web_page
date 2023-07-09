@@ -9,19 +9,17 @@
       <!-- 为了和其他菜单样式保持一致，请一定要添加类名 el-menu-item -->
       
 
-      <div class="el-menu-item exit" @click="exitButton()" v-show="isLogin">
-        退出
-      </div>
-      <div class="el-menu-item username" v-show="isLogin"><i class="el-icon-user-solid"></i>{{ username }}</div>
-      <el-menu-item class="login" index="Login" :route="{ name: 'Login' }" v-show="!isLogin">登录</el-menu-item>
-      <!-- 生产环境 -->
-      <el-menu-item class="register" v-if="isProductEnv" v-show="!isLogin">
-        <a href="" target="_blank">注册</a>
-      </el-menu-item>
-      <!-- 开发环境 -->
-      <el-menu-item class="register" v-else v-show="!isLogin" index="Register" :route="{ name: 'Register' }"
-        >注册</el-menu-item
-      >
+<!--      <div class="el-menu-item exit" @click="exitButton()" v-show="isLogin">-->
+<!--        退出-->
+<!--      </div>-->
+<!--      <div class="el-menu-item username" v-show="isLogin"><i class="el-icon-user-solid"></i>{{ username }}</div>-->
+<!--      <el-menu-item class="login" index="Login" :route="{ name: 'Login' }" v-show="!isLogin">登录</el-menu-item>-->
+<!--      &lt;!&ndash; 生产环境 &ndash;&gt;-->
+<!--      <el-menu-item class="register" v-if="isProductEnv" v-show="!isLogin">-->
+<!--        <a href="" target="_blank">注册</a>-->
+<!--      </el-menu-item>-->
+<!--      &lt;!&ndash; 开发环境 &ndash;&gt;-->
+<!--      <el-menu-item class="register" v-else v-show="!isLogin" index="Register" :route="{ name: 'Register' }">注册</el-menu-item>-->
     </el-menu>
   </div>
 </template>

@@ -63,6 +63,17 @@ export default new Router({
         title: '异动通知历史'
       }
     },
+    {
+      path: '/viewPanel',
+      name: 'ViewPanel',
+      component: () => import(/* webpackChunkName: "login" */ '@/views/page/StockViewPanel'),
+      meta: {
+        showHeader:true,
+        showFooter:true,
+        requireAuth: false,
+        title: '查看面板'
+      }
+    },
 
   ]
 })

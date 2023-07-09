@@ -1,7 +1,7 @@
 <template>
   <div class="perfect_list">
     <div style="width: 100%">
-      <div style="text-align: left;display: noneq">
+      <div style="text-align: left;display: none">
         <el-button @click="crowStock">抓取股票</el-button>
         <el-button @click="crowStockDayInfo">抓取每日信息</el-button>
       </div>
@@ -43,7 +43,7 @@
           v-for="(item, index) in perfectStockList"
           :key="index"
       >
-        <div>{{index}},<span @click="copyNum(item.stockNum,this)">{{item.stockNum}}</span>,<span @click="changeIndustry(item.industry)">{{item.industry}}</span>,{{item.score}},{{item.scoreDesc}}</div>
+        <div>{{index}},<span @click="copyNum(item.stockNum,this)">{{item.stockNum}},{{item.stockName}},</span>,<span @click="changeIndustry(item.industry)">{{item.industry}}</span>,{{item.score}},{{item.scoreDesc}}</div>
         <img @mousemove="mouthMove(item.stockNum)"  @mouseout="mouseOut" width="100%" :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+getStockNum(item)+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(item.type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>
         <div class="pp" :style="{right: rightX+'px'}">
         </div>
@@ -151,13 +151,19 @@ export default {
       })
     },
     initUpDownSizeByIndustry(){
-      queryUpDownSizeByIndustry().then((resp)=>{
+      let p = {date:moment(this.date).format("YYYY-MM-DD")}
+      queryUpDownSizeByIndustry(p).then((resp)=>{
         this.UpDownSizeIndustry = resp.data
       })
     },
     changeIndustry(industry){
-      this.industry = industry;
-      this.perfectList(1);
+      if (this.industry == industry){
+        this.industry = "";
+        this.perfectList(1);
+      }else{
+        this.industry = industry;
+        this.perfectList(1);
+      }
     },
     copyNum(stockNum){
       navigator.clipboard.writeText(stockNum);
@@ -182,6 +188,7 @@ export default {
       bigThan({date:moment(this.date).format("YYYY-MM-DD")}).then((resp)=>{
         this.rightX = 3.7+ parseInt(resp.data) * 4.23;
       })
+      this.initUpDownSizeByIndustry();
       let param = {date:moment(this.date).format("YYYY-MM-DD"),strategyId:this.strategyId,pageSize:100};
       if (clearPage){
         this.pageData.currentPage = 1;
@@ -190,7 +197,6 @@ export default {
       param.pageSize = this.pageData.pageCount;
       param.pageNum = this.pageData.currentPage;
       getPerfectList(param).then((resp)=>{
-        console.log(resp)
         resp.data.forEach(e=>{
           e.type = "MACD";
         })
@@ -219,7 +225,6 @@ export default {
     },
     changeImg(stock, type){
       stock.type = type;
-      console.log(type)
     },
     crowStock(){
       crowStock().then((resp)=>{

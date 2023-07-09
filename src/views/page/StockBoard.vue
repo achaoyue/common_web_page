@@ -10,8 +10,16 @@
       <span :style="{display:'inlineBlock',width:this.board.upSize/10,backgroundColor:'red'}">上涨：{{this.board.upSize}}</span>
       <span :style="{display:'inlineBlock',width:this.board.upSize/10,backgroundColor:'green'}">下跌：{{this.board.downSize}}</span>
     </div>
-
-    <el-tabs>
+    <div>
+      <el-date-picker
+          v-model="date"
+          type="date"
+          @change="init()"
+          format="yyyy-MM-dd"
+          placeholder="选择日期">
+      </el-date-picker>
+    </div>
+    <el-tabs v-model="activeName">
       <el-tab-pane label="各行业涨跌情况" name="first">
         <div>
           <span class="industry-item" v-for="(val) in this.board.industryUpDown" :key="val.industry">
@@ -48,6 +56,7 @@
         <FavoriteSpan :stock-num="val.stockNum" :is-favorite="val.favorite" :change="(op)=>{changeFavorite(val,op)}"/>
         <img @click="changeType" @mousemove="mouseOver(val.stockNum)" @mouseout="mouseOut"  :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+getStockNum(val)+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>
         <div class="pp ppx" :style="{left: ppx+'px'}"></div>
+        <div class="pp ppx" :style="{right: ppfix+'px'}"></div>
       </div>
     </span>
       </el-tab-pane>
@@ -58,6 +67,7 @@
         <FavoriteSpan :stock-num="val.stockNum" :is-favorite="val.favorite" :change="(op)=>{changeFavorite(val,op)}"/>
         <img @click="changeType"  @mousemove="mouseOver(val.stockNum)" @mouseout="mouseOut" :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+getStockNum(val)+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>
         <div class="pp ppx" :style="{left: ppx+'px'}"></div>
+        <div class="pp ppx" :style="{right: ppfix+'px'}"></div>
       </div>
     </span>
       </el-tab-pane>
@@ -82,7 +92,10 @@ export default {
   data(){
     return {
       ppx:1,
+      ppfix:1,
       type:"CCI",
+      activeName:'first',
+      date:new Date(),
       board:{
         upSize:0,
         downSize:0,
@@ -111,9 +124,19 @@ export default {
   },
   methods:{
     init(){
-      getDataBoard().then((resp)=>{
+      let p = {date:moment(this.date).format("YYYY-MM-DD")}
+      getDataBoard(p).then((resp)=>{
         this.board = resp.data;
       })
+
+      let date = moment(this.date).format("YYYY-MM-DD");
+      let idx = 0;
+      for (let day of this.tradeDays){
+        if (day.localeCompare(date) > 0){
+          idx ++;
+        }
+      }
+      this.ppfix = 3.7+ idx * 4.23;
     },
     initTradeDays(){
       let now = new Date();
