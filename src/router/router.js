@@ -24,7 +24,7 @@ export default new Router({
     {
       path: '/test',
       name: 'Test',
-      component: () => import(/* webpackChunkName: "login" */ '@/views/components/Test'),
+      component: () => import(/* webpackChunkName: "login" */ '@/views/page/Test'),
       meta: {
         showHeader:true,
         showFooter:true,

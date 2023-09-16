@@ -9,6 +9,7 @@
     <div>
       <span :style="{display:'inlineBlock',width:this.board.upSize/10,backgroundColor:'red'}">上涨：{{this.board.upSize}}</span>
       <span :style="{display:'inlineBlock',width:this.board.upSize/10,backgroundColor:'green'}">下跌：{{this.board.downSize}}</span>
+      <span :style="{display:'inlineBlock',width:this.board.upSize/10,backgroundColor:'white'}">涨停：{{this.board.topSize}}</span>
     </div>
     <div>
       <el-date-picker
@@ -23,7 +24,7 @@
       <el-tab-pane label="各行业涨跌情况" name="first">
         <div>
           <span class="industry-item" v-for="(val) in this.board.industryUpDown" :key="val.industry">
-            <span>{{val.industry}}</span> 上涨:{{val.upSize}},下跌:{{val.downSize}}
+            <span>{{val.industry}}</span> 上涨:{{val.upSize}},下跌:{{val.downSize}},涨停：<span :style="{backgroundColor:'white', color:val.topSize>0?'red':'white'}">{{val.topSize}}</span>
           </span>
         </div>
       </el-tab-pane>

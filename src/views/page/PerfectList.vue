@@ -8,7 +8,7 @@
       <div style="text-align: left">
         <div>
           <span class="industry-item" v-for="(val) in this.UpDownSizeIndustry" :key="val.industry">
-            <span @click="changeIndustry(val.industry)" :style="{backgroundColor:val.industry==industry?'red':''}">{{val.industry}}</span> 上涨:{{val.upSize}},下跌:{{val.downSize}}
+            <span @click="changeIndustry(val.industry)" :style="{backgroundColor:val.industry==industry?'red':''}">{{val.industry}}</span> 上涨:{{val.upSize}},下跌:{{val.downSize}},涨停：<span :style="{backgroundColor:'white', color:val.topSize>0?'red':'white'}">{{val.topSize}}</span>
           </span>
         </div>
         <el-date-picker
