@@ -1,3 +1,6 @@
+<!--
+  股票id查看股票图片
+-->
 <template>
   <div class="perfect_list">
     <div>
@@ -48,7 +51,7 @@ import {bigThan} from "@/request/stock";
 import moment from "moment";
 
 export default {
-  name: 'PerfectList',
+  name: 'StockViewPanel',
   data() {
     return {
       ppx:0,

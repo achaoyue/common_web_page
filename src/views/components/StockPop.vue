@@ -1,3 +1,4 @@
+<!-- 弹窗组件 -->
 <template>
   <div v-if="stockNum != '' && keyPressed != 'a' " class="pop-span">
     <div style="text-align: center;width: 100%;background-color: #6f42c1" @click="closePanel()">close</div>

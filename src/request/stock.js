@@ -6,6 +6,8 @@ export const getPerfectList = p => get('stock/score/query', p);
 export const calcStockScore = p => get('stock/score/calc', p);
 export const bigThan = p => get('stock/bigThan', p);
 export const industryList = p => get('stock/industryList', p);
+export const getStockList = p => get('stock/stockList', p);
+export const queryDayLine = p => get('stock/queryDayLine', p);
 export const queryUpDownSizeByIndustry = p => get('stock/queryUpDownSizeByIndustry', p);
 export const getDayInfoList = p => get('stock/getDayInfoList', p);
 export const crowStock = p => get('stock/crowStock', p);
@@ -13,6 +15,8 @@ export const crowStockDayInfo = p => get('stock/crowStockDayInfo', p);
 export const getDataBoard = p => get('stock/getDataBoard', p);
 export const editFavorite = p => post('stock/editFavorite', p);
 export const getNoticeList = p => get('stock/getNoticeList', p);
+export const queryIndustryLine = p => get("stock/queryIndustryLine", p)
+export const queryKLine = p => get("stock/queryKLine", p)
 
 
 

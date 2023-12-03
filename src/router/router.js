@@ -73,6 +73,16 @@ export default new Router({
         requireAuth: false,
         title: '查看面板'
       }
+    },{
+      path: '/historySold',
+      name: 'HistorySold',
+      component: () => import(/* webpackChunkName: "login" */ '@/views/page/HistorySold'),
+      meta: {
+        showHeader:true,
+        showFooter:true,
+        requireAuth: false,
+        title: '历史清空代码'
+      }
     },
 
   ]

@@ -1,3 +1,4 @@
+<!-- 股票列表 -->
 <template>
   <div class="perfect_list">
     <div style="width: 100%">

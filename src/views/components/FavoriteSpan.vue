@@ -1,3 +1,4 @@
+<!-- 收藏组件 -->
 <template>
   <div class="favoriteBtn">
     <div v-if="isFavorite=='Y'" @click="editFavorite">取消收藏</div>

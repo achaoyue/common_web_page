@@ -1,3 +1,4 @@
+<!-- 股票大盘 -->
 <template>
   <div class="board">
     <h2>总涨跌情况:</h2>
@@ -79,6 +80,7 @@
     <!--      <img @click="changeType" :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+selectStockNum+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>-->
     <!--    </div>-->
     <StockPop v-if="selectStockNum != ''" :stockNum="selectStockNum" :type="type" />
+    <IndustryUpEcharts/>
   </div>
 </template>
 <script>
@@ -89,6 +91,7 @@ import {
 import StockPop from "@/views/components/StockPop";
 import FavoriteSpan from "@/views/components/FavoriteSpan";
 import moment from "moment/moment";
+import IndustryUpEcharts from "@/views/components/IndustryUpEcharts";
 export default {
   data(){
     return {
@@ -110,6 +113,7 @@ export default {
     }
   },
   components:{
+    IndustryUpEcharts,
     FavoriteSpan,
     StockPop
   },
