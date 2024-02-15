@@ -14,7 +14,7 @@
         placeholder="选择结束日期">
     </el-date-picker>
     <el-button @click="initIndustryLine">查询</el-button>
-    <div id="k-chart" style="width: 100%;height: 500px"></div>
+    <div id="k-chart" style="width: 100%;height: 600px"></div>
   </div>
 </template>
 
@@ -28,12 +28,12 @@ export default {
       echarts:{},
       kChart:null,
       param:{
-        startDate:"2023-06-01",
+        startDate:"2023-10-01",
         endDate:new Date(),
       },
       chartsData: {
         title: {
-          text: '各行业涨停比列走势'
+          text: '各行业涨跌比列走势'
         },
         tooltip:{
           trigger:'item',
@@ -47,7 +47,7 @@ export default {
         grid: {
           left: '20px',
           right: '150px',
-          bottom: '20px',
+          bottom: '150px',
           containLabel: true
         },
         dataZoom:[
@@ -57,8 +57,11 @@ export default {
         ],
         legend: {
           selector:true,
-          x:'right',
-          orient:'vertical',
+          itemWidth: 6,
+          itemHeight: 6,
+          width:'80%',
+          bottom:40,
+          xorient:'vertical',
           data: ['a','b']
         },
         xAxis: {
@@ -98,7 +101,9 @@ export default {
         this.chartsData.xAxis.data = resp.xaxis;
         resp.series.forEach(e=>{e.type='line';e.emphasis = {focus: 'series'}})
         this.chartsData.series = resp.series;
-        this.chartsData.legend.data = this.chartsData.series.map(e=>e.name);
+        this.chartsData.legend.data = this.chartsData.series.map(e=>e.name).sort(function compareFunction(param1, param2) {
+          return param1.localeCompare(param2,"zh");
+        });
         this.kChart.clear();
         this.kChart.setOption(this.chartsData)
       })

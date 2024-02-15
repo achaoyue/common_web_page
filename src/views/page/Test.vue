@@ -33,7 +33,7 @@ export default {
     return {
       param:{
         stockNums:["600408"],
-        startDate:new Date("2023-06-01"),
+        startDate:new Date("2023-10-01"),
         endDate:new Date(),
       }
     }

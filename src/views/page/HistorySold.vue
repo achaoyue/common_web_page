@@ -3,7 +3,7 @@
   <div style="">
     <span v-for="item of data" style="width: 30%; display: inline-block">
       <span>{{item.stockName}}</span>
-      <StockKLine :with-zoom="false" :stock-num="item.stockNum" :start-date="'2023-03-01'" :end-date="new Date()"/>
+      <StockKLine :with-zoom="false" :stock-num="item.stockNum" :start-date="'2023-06-01'" :end-date="new Date()"/>
     </span>
   </div>
 </template>
