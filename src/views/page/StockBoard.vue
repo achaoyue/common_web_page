@@ -8,9 +8,9 @@
       <img @click="changeType" :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid=1.000001&UnitWidth=-6&imageType=KXL&EF=&Formula='+(type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>
     </div>
     <div>
-      <span :style="{display:'block',width:this.board.upSize/10+'px',backgroundColor:'red'}">{{this.board.upSize}}</span>
-      <span :style="{display:'block',width:this.board.downSize/10+'px',backgroundColor:'green'}">{{this.board.downSize}}</span>
-      <span :style="{display:'block',width:this.board.topSize/10+'px',backgroundColor:'blue'}">{{this.board.topSize}}</span>
+      <div><span :style="{display:'inline-block',width:this.board.upSize/10+'px',backgroundColor:'red',height:'20px'}"> </span>{{this.board.upSize}}</div>
+      <div><span :style="{display:'inline-block',width:this.board.downSize/10+'px',backgroundColor:'green',height:'20px'}"> </span>{{this.board.downSize}}</div>
+      <div><span :style="{display:'inline-block',width:this.board.topSize/10+'px',backgroundColor:'blue',height:'20px'}"> </span>{{this.board.topSize}}</div>
     </div>
     <div>
       <el-date-picker

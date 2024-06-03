@@ -11,7 +11,7 @@ module.exports = {
     port: 8081,
     proxy: { //配置代理，解决跨域请求后台数据的问题
       '/api': {
-        target: 'http://localhost:8080/api', //后台接口
+        target: 'http://192.168.3.47:8080/api', //后台接口
         ws: true, //是否跨域
         changeOrigin: true,
         pathRewrite: {
