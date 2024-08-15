@@ -83,6 +83,8 @@ export function get(url, params) {
     axios
       .get(url, {
         params: params,
+        withCredentials:true,
+        headers: {'X-Requested-With': 'XMLHttpRequest'},
         paramsSerializer: params => {
           return stringify(params, { indices: false })
         }
@@ -113,7 +115,10 @@ export function post(url, data = {}, info) {
       }
     }
     axios
-      .post(url, newData)
+      .post(url, newData,{
+        withCredentials:true,
+        headers: {'X-Requested-With': 'XMLHttpRequest'}
+      })
       .then((res) => {
         resolve(res.data)
       })
