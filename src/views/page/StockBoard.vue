@@ -26,17 +26,22 @@
         <div>
           <span class="industry-item" v-for="(val) in this.board.industryUpDown" :key="val.industry">
             <span>{{val.industry}}</span> 上涨:{{val.upSize}},下跌:{{val.downSize}},涨停：<span :style="{backgroundColor:'white', color:val.topSize>0?'red':'white'}">{{val.topSize}}</span>
+            <div :style="{backgroundColor: 'blue',height: '3px',width: (val.upSize/(val.upSize+val.downSize)*100)+'%'}"></div>
           </span>
         </div>
       </el-tab-pane>
       <el-tab-pane label="收藏" name="second">
         <span class="stock-img favorite_stock" v-for="(val) in this.board.favoriteStockList" :key="val.stockNum+'F'">
       <div>
-        <span @click="copyNum(val.stockNum)">{{val.stockName}}</span> {{val.industry}} {{val.upDownRange}}
-        <FavoriteSpan :stock-num="val.stockNum" :is-favorite="val.favorite" :change="(op)=>{changeFavorite(val,op)}"/>
-        <img @click="changeType"  @mousemove="mouseOver(val.stockNum)" @mouseout="mouseOut" :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+getStockNum(val)+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>
-        <div class="pp ppx" :style="{left: ppx+'px'}"></div>
-        <div class="pp" :style="{right: getRightPx(val)+'px'}"></div>
+        <span>
+          <span @click="copyNum(val.stockNum)">{{val.stockName}}</span>{{val.industry}} {{val.upDownRange}}
+        </span>
+        <StockImg
+            :stock-num="val.stockNum"
+            :right-x="getRightPx(val)"
+            :ppx="ppx"
+            :favorite="val.favorite"
+            :mouse-move-notice="(x)=>{mouseChange(x,val.stockNum)}"></StockImg>
       </div>
       </span>
       </el-tab-pane>
@@ -44,9 +49,12 @@
         <div class="stock-img val_top_stock" v-for="(val,key) in this.board.industryTopMap" :key="key+'T'">
           <div>
             行业:{{key}} 股票:<span @click="copyNum(val.stockNum)">{{val.stockName}}</span>,{{val.upDownRange}}
-            <FavoriteSpan :stock-num="val.stockNum" :is-favorite="val.favorite" :change="(op)=>{changeFavorite(val,op)}"/>
-            <img @mousemove="mouseOver(val.stockNum)" @mouseout="mouseOut" @click="changeType" :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+getStockNum(val)+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>
-            <div class="pp ppx" :style="{left: ppx+'px'}"></div>
+            <StockImg
+                :stock-num="val.stockNum"
+                :right-x="ppfix"
+                :ppx="ppx"
+                :favorite="val.favorite"
+                :mouse-move-notice="(x)=>{mouseChange(x,val.stockNum)}"></StockImg>
           </div>
         </div>
       </el-tab-pane>
@@ -55,30 +63,30 @@
         <span class="stock-img range_top_stock" v-for="(val) in this.board.topUpStockList" :key="val.stockNum+'H'">
       <div>
         <span @click="copyNum(val.stockNum)">{{val.stockName}}</span> {{val.industry}} {{val.upDownRange}}
-        <FavoriteSpan :stock-num="val.stockNum" :is-favorite="val.favorite" :change="(op)=>{changeFavorite(val,op)}"/>
-        <img @click="changeType" @mousemove="mouseOver(val.stockNum)" @mouseout="mouseOut"  :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+getStockNum(val)+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>
-        <div class="pp ppx" :style="{left: ppx+'px'}"></div>
-        <div class="pp ppx" :style="{right: ppfix+'px'}"></div>
+        <StockImg
+            :stock-num="val.stockNum"
+            :right-x="ppfix"
+            :ppx="ppx"
+            :favorite="val.favorite"
+            :mouse-move-notice="(x)=>{mouseChange(x,val.stockNum)}"></StockImg>
       </div>
     </span>
       </el-tab-pane>
       <el-tab-pane label="跌幅榜" name="five">
         <span class="stock-img range_down_stock" v-for="(val) in this.board.topDownStockList" :key="val.stockNum+'L'">
-      <div>
-        <span @click="copyNum(val.stockNum)">{{val.stockName}}</span> {{val.industry}} {{val.upDownRange}}
-        <FavoriteSpan :stock-num="val.stockNum" :is-favorite="val.favorite" :change="(op)=>{changeFavorite(val,op)}"/>
-        <img @click="changeType"  @mousemove="mouseOver(val.stockNum)" @mouseout="mouseOut" :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+getStockNum(val)+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>
-        <div class="pp ppx" :style="{left: ppx+'px'}"></div>
-        <div class="pp ppx" :style="{right: ppfix+'px'}"></div>
-      </div>
-    </span>
+          <div>
+            <span @click="copyNum(val.stockNum)">{{val.stockName}}</span> {{val.industry}} {{val.upDownRange}}
+            <StockImg
+                :stock-num="val.stockNum"
+                :right-x="ppfix"
+                :ppx="ppx"
+                :favorite="val.favorite"
+                :mouse-move-notice="(x)=>{mouseChange(x,val.stockNum)}"></StockImg>
+
+          </div>
+        </span>
       </el-tab-pane>
     </el-tabs>
-    <!--    <div v-if="selectStockNum != ''" class="pop-span">-->
-    <!--      <img @click="changeType" :src="'https://webquotepic.eastmoney.com/GetPic.aspx?imageType=r&type=&token=44c9d251add88e27b65ed86506f6e5da&nid='+selectStockNum+'&timespan=1672321137'"/>-->
-    <!--      <img @click="changeType" :src="'https://webquotepic.eastmoney.com/GetPic.aspx?imageType=t&type=M4&token=44c9d251add88e27b65ed86506f6e5da&nid='+selectStockNum+'&timespan=1672584931'"/>-->
-    <!--      <img @click="changeType" :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+selectStockNum+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>-->
-    <!--    </div>-->
     <StockPop v-if="selectStockNum != ''" :stockNum="selectStockNum" :type="type" />
     <IndustryUpEcharts/>
   </div>
@@ -92,6 +100,7 @@ import StockPop from "@/views/components/StockPop";
 import FavoriteSpan from "@/views/components/FavoriteSpan";
 import moment from "moment/moment";
 import IndustryUpEcharts from "@/views/components/IndustryUpEcharts";
+import StockImg from "@/views/components/StockImg";
 export default {
   data(){
     return {
@@ -113,6 +122,7 @@ export default {
     }
   },
   components:{
+    StockImg,
     IndustryUpEcharts,
     FavoriteSpan,
     StockPop
@@ -200,6 +210,10 @@ export default {
       this.ppx = event.offsetX-3;
       this.selectStockNum = stockNum;
     },
+    mouseChange(x,stockNum){
+      this.ppx = x;
+      this.selectStockNum = stockNum;
+    },
     changeFavorite(stock,op){
       stock.favorite = op;
     },
@@ -214,7 +228,6 @@ export default {
 .stock-img{
   display: inline-block;
   word-break: break-all;
-  white-space: break-spaces;
   width: 300px;
   position: relative;
 }
@@ -235,12 +248,12 @@ export default {
   border: #e0b1ff 1px solid;
   margin-right: 5px;
   margin-bottom: 3px;
-  padding: 3px 10px 3px 0px;
+  padding: 3px 10px 0px 0px;
   display: inline-block;
 }
 .industry-item > span{
   background-color: #ffc9c9;
-  padding: 3px 0px 3px 0px;
+  padding: 3px 0px 0px 0px;
 }
 .favorite_stock{
   background-color: #ff5a1e;

@@ -14,12 +14,13 @@
         placeholder="选择结束日期">
     </el-date-picker>
     <el-button @click="initIndustryLine">查询</el-button>
-    <div id="k-chart" style="width: 100%;height: 600px"></div>
+    <div id="k-chart" style="width: 100%;height: 800px"></div>
   </div>
 </template>
 
 <script>
 import {queryIndustryLine} from "@/request/stock";
+import moment from "moment/moment";
 
 export default {
   name: "IndustryUpEcharts",
@@ -28,7 +29,7 @@ export default {
       echarts:{},
       kChart:null,
       param:{
-        startDate:"2023-10-01",
+        startDate:moment().subtract(30,'days').format("YYYY-MM-DD"),
         endDate:new Date(),
       },
       chartsData: {

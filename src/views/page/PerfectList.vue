@@ -9,7 +9,10 @@
       <div style="text-align: left">
         <div>
           <span class="industry-item" v-for="(val) in this.UpDownSizeIndustry" :key="val.industry">
-            <span @click="changeIndustry(val.industry)" :style="{backgroundColor:val.industry==industry?'red':''}">{{val.industry}}</span> 上涨:{{val.upSize}},下跌:{{val.downSize}},涨停：<span :style="{backgroundColor:'white', color:val.topSize>0?'red':'white'}">{{val.topSize}}</span>
+            <span @click="changeIndustry(val.industry)" :style="{backgroundColor:val.industry==industry?'red':''}">{{val.industry}}</span>
+            上涨:{{val.upSize}},下跌:{{val.downSize}},涨停：
+            <span :style="{backgroundColor:'white', color:val.topSize>0?'red':'white'}">{{val.topSize}}</span>
+            <div :style="{backgroundColor: 'blue',height: '3px',width: (val.upSize/(val.upSize+val.downSize)*100)+'%'}"></div>
           </span>
         </div>
         <el-date-picker
@@ -38,26 +41,33 @@
         <el-input style="width: 300px" v-model="stockNum" placeholder="股票编码"></el-input>
         <el-button type="warning" @click="perfectList(1)">查询</el-button>
         <el-button type="warning" @click="calc">开始计算</el-button>
+        <div>
+          <el-radio-group v-model="allType">
+            <el-radio-button label="MACD"></el-radio-button>
+            <el-radio-button label="KDJ"></el-radio-button>
+            <el-radio-button label="CCI"></el-radio-button>
+            <el-radio-button label="TIME"></el-radio-button>
+            <el-radio-button label="FIVE"></el-radio-button>
+          </el-radio-group>
+        </div>
       </div>
       <div
           class="perfect_img"
           v-for="(item, index) in perfectStockList"
-          :key="index"
+          :key="item.stockNum"
       >
         <div>{{index}},<span @click="copyNum(item.stockNum,this)">{{item.stockNum}},{{item.stockName}},</span>,<span @click="changeIndustry(item.industry)">{{item.industry}}</span>,{{item.score}},{{item.scoreDesc}}</div>
-        <img @mousemove="mouthMove(item.stockNum)"  @mouseout="mouseOut" width="100%" :src="'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid='+getStockNum(item)+'&UnitWidth=-6&imageType=KXL&EF=&Formula='+(item.type)+'&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'"/>
-        <div class="pp" :style="{right: rightX+'px'}">
-        </div>
-        <div class="pp ppx" :style="{left: ppx+'px'}">
-        </div>
-        <div class="idx_op">
-          <span @click="changeImg(item,'MACD')">macd</span>
-          <span @click="changeImg(item,'KDJ')">kdj</span>
-          <span @click="changeImg(item,'CCI')">cci</span>
-          <span>{{item.upDownRange}}</span>
-          <span><a target="_blank" :href="'http://quote.eastmoney.com/concept/'+getStockNum2(item)+'.html#'">详情</a></span>
-          <FavoriteSpan :stock-num="item.stockNum" :is-favorite="item.favorite" :change="(op)=>{item.favorite = op}"/>
-        </div>
+        <span>{{item.upDownRange}}</span>
+        <StockImg
+            :stock-num="item.stockNum"
+            :right-x="rightX"
+            :ppx="ppx"
+            :all-type="allType"
+            :favorite="item.favorite"
+            :default-start="startDate"
+            :default-end="endDate"
+            :mouse-move-notice="mouseChange"></StockImg>
+
       </div>
       <el-pagination
           class="stock-pagination"
@@ -88,11 +98,13 @@ import {
 import moment from "moment";
 import StockPop from "@/views/components/StockPop";
 import FavoriteSpan from "@/views/components/FavoriteSpan";
+import StockImg from "@/views/components/StockImg";
 
 export default {
   name: 'PerfectList',
   data() {
     return {
+      allType:null,
       rightX:3,
       ppx:0,
       indictors:[
@@ -125,6 +137,7 @@ export default {
     }
   },
   components:{
+    StockImg,
     StockPop,
     FavoriteSpan
   },
@@ -133,6 +146,14 @@ export default {
     this.initIndustryList();
     this.initUpDownSizeByIndustry();
   },
+  computed:{
+    startDate: function (){
+      return moment(this.date).subtract(30, 'days').format("YYYY-MM-DD")
+    },
+    endDate: function (){
+      return moment(this.date).add(2,"days").format("YYYY-MM-DD")
+    }
+  },
   methods: {
     mouthMove(stockNum){
       this.ppx = event.offsetX-3;
@@ -140,6 +161,9 @@ export default {
     },
     mouseOut() {
       //this.selectStockNum = '';
+    },
+    mouseChange(x){
+      this.ppx = x;
     },
     initIndustryList(){
       industryList().then((resp)=>{
@@ -290,11 +314,11 @@ export default {
   border: #e0b1ff 1px solid;
   margin-right: 5px;
   margin-bottom: 3px;
-  padding: 3px 10px 3px 0px;
+  padding: 3px 10px 0px 0px;
   display: inline-block;
 }
 .industry-item > span{
   background-color: #ffc9c9;
-  padding: 3px 0px 3px 0px;
+  padding: 3px 0px 0px 0px;
 }
 </style>

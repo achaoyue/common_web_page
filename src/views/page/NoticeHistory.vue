@@ -9,10 +9,21 @@
           format="yyyy-MM-dd"
           placeholder="选择日期">
       </el-date-picker>
+      <el-radio-group v-model="type">
+        <el-radio-button label="MACD"></el-radio-button>
+        <el-radio-button label="KDJ"></el-radio-button>
+        <el-radio-button label="CCI"></el-radio-button>
+      </el-radio-group>
     </div>
     <div v-for="item in noticeData" class="noticeImg" @mouseover="mouthMove(item.stockNum)" :key="item.stockNum">
       <div>{{item.stockName}},{{item.noticeCount}},{{item.sendLog.substr(8,20)}}
         <span><a target="_blank" :href="'http://quote.eastmoney.com/concept/'+getStockNum2(item)+'.html#'">详情</a></span>
+        <FavoriteSpan :stock-num="item.stockNum" :is-favorite="'N'" :change="(op)=>{}"/>
+        <StockDetailPop
+            :key="item.stockNum+'_detail_pop'"
+            :stock-num="item.stockNum"
+            :default-start-date="defaultStart"
+            :default-end-date="defaultEnd" />
       </div>
 <!--        <img :src="'https://webquotepic.eastmoney.com/GetPic.aspx?imageType=r&type=&token=44c9d251add88e27b65ed86506f6e5da&nid='+getStockNum(item)+'&timespan=1672321137'"/>-->
       <img :src="'https://webquotepic.eastmoney.com/GetPic.aspx?imageType=t&type=M4&token=44c9d251add88e27b65ed86506f6e5da&nid='+getStockNum(item)+'&timespan=1672584931'"/>
@@ -28,18 +39,24 @@ import {
   getNoticeList
 } from '@/request/stock.js'
 import StockPop from "@/views/components/StockPop";
+import FavoriteSpan from "@/views/components/FavoriteSpan";
 import moment from "moment/moment";
+import StockDetailPop from "@/views/components/StockDetailPop";
 export default {
   name: "NoticeHistory",
   components:{
-    StockPop
+    StockDetailPop,
+    StockPop,
+    FavoriteSpan
   },
   data(){
      return {
        noticeDay:new Date(),
         noticeData:[],
        selectStockNum:'',
-       type:"CCI"
+       type:"CCI",
+       defaultStart:moment().subtract(60, "days").format("YYYY-MM-DD"),
+       defaultEnd:moment().format("YYYY-MM-DD")
      }
   },
   mounted() {
@@ -83,6 +100,6 @@ export default {
   border: #66b1ff solid 1px;
 }
 .noticeImg img{
-  width: 185px;
+  width: 300px;
 }
 </style>

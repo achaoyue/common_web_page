@@ -5,17 +5,14 @@
   <div class="perfect_list">
     <div>
       <div style="text-align: left">
-        <el-input
-            type="textarea"
-            :autosize="{ minRows: 2, maxRows: 10}"
-            @change="stockListChange"
-            placeholder="请输入内容"
-            v-model="stockListStr">
-        </el-input>
+        <el-radio-group v-model="selectId">
+          <el-radio-button label="STRICT"></el-radio-button>
+        </el-radio-group>
         <el-date-picker
             v-model="date"
             type="date"
             @change="cc"
+            value-format="yyyy-MM-dd"
             format="yyyy-MM-dd"
             placeholder="选择日期">
         </el-date-picker>
@@ -51,18 +48,14 @@
           v-for="(item, index) in stockList"
           :key="index"
       >
-        <div>{{index}},{{item}}</div>
-        <StockKLine
-            v-if="allType == 'NEW'"
-            :stock-num="item"
-                    :start-date="startDate"
-                    :end-date="endDate"/>
+        <div>{{index}},{{item.stockName}},{{item.stockNum}},{{item.industry}}</div>
         <StockImg
-            v-if="allType != 'NEW'"
-            :stock-num="item"
+            :stock-num="item.stockNum"
             :right-x="rightX"
             :ppx="ppx"
             :all-type="allType"
+            :default-start="startDate"
+            :default-end="endDate"
             :mouse-move-notice="mouseChange"></StockImg>
 
       </div>
@@ -73,7 +66,7 @@
 
 <script>
 
-import {bigThan, queryDayLine, stockSelect} from "@/request/stock";
+import {bigThan,stockSelect,queryDayLine} from "@/request/stock";
 import FavoriteSpan from "@/views/components/FavoriteSpan";
 import moment from "moment";
 import StockImg from "@/views/components/StockImg";
@@ -95,9 +88,10 @@ export default {
       stockListStr:'',
       stockList:[],
       type:"CCI",
-      date:new Date(),
+      date:moment().format("YYYY-MM-DD"),
       startDate:moment().subtract(30,'days').format("YYYY-MM-DD"),
-      endDate:new Date(),
+      endDate:moment().format("YYYY-MM-DD"),
+      selectId:'STRICT'
     }
   },
   mounted() {
@@ -110,10 +104,6 @@ export default {
     mouthMove(event){
       console.log("mouth move",event.offsetX)
       this.ppx = event.offsetX
-    },
-    stockListChange(){
-      this.stockList.length = 0;
-      this.stockList = this.stockListStr.split("\n");
     },
     cc(){
       bigThan({date:moment(this.date).format("YYYY-MM-DD")}).then((resp)=>{
@@ -129,13 +119,17 @@ export default {
         let dayIndex = days.indexOf(moment(this.date).format("YYYY-MM-DD"));
         this.startDate = moment(this.date).subtract(60,'days').format("YYYY-MM-DD");
         this.endDate = days[Math.min(dayIndex+2, days.length-1)];
-        this.stockListChange();
-        this.$notify({
-          title: '成功',
-          message: '查询成功',
-          type: 'success'
-        });
+        console.log(this.endDate)
+        stockSelect({date:moment(this.date).format("YYYY-MM-DD"),selectId:this.selectId}).then(resp=>{
+          this.stockList = resp.data
+          this.$notify({
+            title: '成功',
+            message: '查询成功',
+            type: 'success'
+          });
+        })
       })
+
     },
     getStockNum(stockNum){
       if (stockNum.startsWith("6")){

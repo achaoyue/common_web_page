@@ -4,6 +4,16 @@ import { Message } from 'element-ui';
 
 // 全局函数
 const globalFunction = {
+  toMap:function(arr, key){
+    if (! (arr instanceof Array)){
+      throw "非数组对象";
+    }
+    let map = {};
+    for(let item of arr){
+      map[item[key]] = item;
+    }
+    return map;
+  },
   /**
    * 格式化文件大小
    * @param {number} size 文件大小
@@ -37,11 +47,14 @@ const globalFunction = {
     let resultStr = resultCount + '%'
     return resultStr
   },
-  formatNum(num) { 
+  formatNum(num, fixed) {
+    if (fixed == undefined){
+      fixed =2;
+    }
     if (num > 100000000) {
-      return (num / 100000000).toFixed(2) + "亿"
+      return (num / 100000000).toFixed(fixed) + "亿"
     } else if (num > 10000) {
-      return (num / 10000).toFixed(2) + "万"
+      return (num / 10000).toFixed(fixed) + "万"
     } else {
       return num
     }

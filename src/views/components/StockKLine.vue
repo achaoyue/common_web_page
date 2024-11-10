@@ -1,12 +1,13 @@
 <!-- 股票K线 -->
 <template>
   <div style="width: 100%;display: inline-block">
-    <div :id="'stock-k-line'+this.stockNum" style="width: 100%;height: 800px"></div>
+    <div :id="'stock-k-line'+this.stockNum+(this.fixId || '')" style="width: 100%;height: 800px"></div>
   </div>
 </template>
 
 <script>
 import {queryDayLine} from "@/request/stock";
+import globalFunction from "@/globalFunction";
 
 var upColor = '#ec0000';//红涨
 var downColor = '#00da3c';//绿跌
@@ -14,6 +15,7 @@ export default {
   name: "StockKLine",
 
   props: {
+    fixId:String,
     stockNum: String,
     startDate: [Date, String],
     endDate: [Date, String],
@@ -21,9 +23,11 @@ export default {
   },
   data() {
     return {
+      uniqueKey:"",
       echarts: {},
       kChart: null,
       param: {},
+      dayInfos: {},
       chartsData: {
         title: {
           text: this.stockNum
@@ -33,8 +37,24 @@ export default {
           axisPointer: {
             type: 'cross',
             label: {
-              backgroundColor: '#6a7985'
+              backgroundColor: '#ff5a1e',
+              show:false
             }
+          },
+          formatter: (params) => {
+            if (this.dayInfos == null){
+              return "数据不存在"
+            }
+            let dayInfo = this.dayInfos[params[0].name];
+            return "<div style='text-align: left'>日期:"+dayInfo.date
+                +'<br/>open:'+dayInfo.open
+                +'<br/>close:'+dayInfo.close
+                +'<br/>low:'+dayInfo.low
+                +'<br/>high:'+dayInfo.high
+                +'<br/>cci:'+dayInfo.cci
+                +'<br/>macd:'+dayInfo.macd
+                +'<br/>vol:'+dayInfo.volume
+                +'<br/>updown:'+dayInfo.upDownRange +'</div>';
           }
         },
         dataZoom: [
@@ -73,35 +93,35 @@ export default {
         }],
         grid: [
           {
-            left: '80px',
-            right: '50px',
+            left: '50px',
+            right: '0px',
             height: '40%',
             containLabel: false
           },
           {
-            left: '80px',
-            right: '50px',
+            left: '50px',
+            right: '0px',
             top: '50%',
             height: '10%',
             containLabel: false
           },
           {
-            left: '80px',
-            right: '50px',
+            left: '50px',
+            right: '0px',
             top: '60%',
             height: '10%',
             containLabel: false
           },
           {
-            left: '80px',
-            right: '50px',
+            left: '50px',
+            right: '0px',
             top: '72%',
             height: '10%',
             containLabel: false
           },
           {
-            left: '80px',
-            right: '50px',
+            left: '50px',
+            right: '0px',
             top: '85%',
             height: '10%',
             containLabel: false
@@ -141,7 +161,14 @@ export default {
             splitArea: {
               show: true
             },
-            gridIndex: 4
+            gridIndex: 4,
+            axisLabel: {
+              // 使用 formatter 函数格式化标签文本
+              formatter: function(value) {
+
+                return globalFunction.formatNum(value,0); // 保留两位小数
+              }
+            }
           },
         ]
       }
@@ -151,13 +178,19 @@ export default {
     this.echarts = require("echarts");
   },
   mounted() {
-    var dom = document.getElementById('stock-k-line' + this.stockNum);
+    var dom = document.getElementById('stock-k-line' + this.stockNum + (this.fixId || ''));
     this.kChart = this.echarts.init(dom);
     // this.kChart.setOption(this.chartsData)
     this.initK()
   },
   watch: {
-    stockNum(oV, nV) {
+    stockNum() {
+      this.initK();
+    },
+    startDate(){
+      this.initK();
+    },
+    endDate(){
       this.initK();
     }
   },
@@ -166,6 +199,12 @@ export default {
       if (!this.stockNum) {
         return;
       }
+      let uk = this.stockNum+"-"+this.startDate+"-"+this.endDate;
+      if (uk == this.uniqueKey){
+        return;
+      }else {
+        this.uniqueKey = uk;
+      }
       this.param = {
         stockNum: this.stockNum,
         startDate: this.startDate,
@@ -173,6 +212,7 @@ export default {
       }
       queryDayLine(this.param).then((resp) => {
         resp = resp.data;
+        this.dayInfos = globalFunction.toMap(resp,"date");
         let xAsis = resp.map(e => e.date);
         this.chartsData.xAxis = [
           {
@@ -180,7 +220,7 @@ export default {
             type: 'category',
             data: xAsis,
             axisLabel: {show: false},
-            axisLine: {show: true},
+            axisLine: {show: false},
             axisTick: {show: false},
             splitLine: {show: false}
           },
@@ -190,7 +230,7 @@ export default {
             data: xAsis,
             gridIndex: 1,
             axisLabel: {show: false},
-            axisLine: {show: true},
+            axisLine: {show: false},
             axisTick: {show: false},
             splitLine: {show: false}
           },
@@ -200,7 +240,7 @@ export default {
             data: xAsis,
             gridIndex: 2,
             axisLabel: {show: false},
-            axisLine: {show: true},
+            axisLine: {show: false},
             axisTick: {show: false},
             splitLine: {show: false}
           },
@@ -210,7 +250,7 @@ export default {
             data: xAsis,
             gridIndex: 3,
             axisLabel: {show: false},
-            axisLine: {show: true},
+            axisLine: {show: false},
             axisTick: {show: false},
             splitLine: {show: false}
           },
@@ -219,7 +259,7 @@ export default {
             type: 'category',
             data: xAsis,
             gridIndex: 4,
-            axisLine: {show: true},
+            axisLine: {show: false},
           }
         ]
 
@@ -272,7 +312,7 @@ export default {
               smooth: true,
               showSymbol: false,
               lineStyle: {
-                opacity: 0.5
+                opacity: 1
               }
             },
             {
@@ -357,7 +397,7 @@ export default {
                 ]
               }
             }, {
-              name: 'K',
+              name: '10%',
               type: 'line',
               data: d1,
               smooth: true,
@@ -366,7 +406,7 @@ export default {
               },
               showSymbol: false
             }, {
-              name: 'K',
+              name: '90%',
               type: 'line',
               data: d2,
               smooth: true,
@@ -375,7 +415,7 @@ export default {
               },
               showSymbol: false
             }, {
-              name: 'K',
+              name: '20%',
               type: 'line',
               data: d3,
               smooth: true,

@@ -17,6 +17,8 @@ export const editFavorite = p => post('stock/editFavorite', p);
 export const getNoticeList = p => get('stock/getNoticeList', p);
 export const queryIndustryLine = p => get("stock/queryIndustryLine", p)
 export const queryKLine = p => get("stock/queryKLine", p)
+export const queryDetail = p => get("stock/detail", p)
+export const stockSelect = p => get("stock/stockSelect", p)
 
 
 

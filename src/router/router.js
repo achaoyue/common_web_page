@@ -84,7 +84,17 @@ export default new Router({
         title: '历史清空代码'
       }
     },
-
+    {
+      path: '/stockSelect',
+      name: 'stockSelect',
+      component: () => import(/* webpackChunkName: "login" */ '@/views/page/StockSelectPanel'),
+      meta: {
+        showHeader:true,
+        showFooter:true,
+        requireAuth: false,
+        title: '逻辑选股'
+      }
+    },
   ]
 })
 

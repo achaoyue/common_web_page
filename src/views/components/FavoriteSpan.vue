@@ -24,8 +24,8 @@ export default {
       }
       editFavorite(param).then(()=>{
         // this.isFavorite = param.opType == "ADD" ? "Y" : "N";
-        this.change(param.opType == "ADD" ? "Y" : "N");
-      })
+        this.change && this.change(param.opType == "ADD" ? "Y" : "N");
+      },()=>{alert('收藏错误')})
     }
   }
 }

@@ -1,7 +1,7 @@
 <!--行业选择器-->
 <template>
   <div>
-    <el-select v-model="industry" filterable clearable @change="stockChange(1)" placeholder="请选择">
+    <el-select v-model="industry"  :multiple="this.multiple" filterable clearable @change="stockChange(1)" placeholder="请选择">
       <el-option
           v-for="item in industryList"
           :key="item"
@@ -24,7 +24,8 @@ export default {
     }
   },
   props:{
-    change:Function
+    change:Function,
+    multiple:Boolean
   },
   mounted(){
     this.initStock();
@@ -36,7 +37,7 @@ export default {
         this.industryList = resp;
       })
     },
-    stockChange(k){
+    stockChange(){
       this.change(this.industry)
     }
   }

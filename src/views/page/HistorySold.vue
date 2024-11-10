@@ -1,9 +1,9 @@
 <!-- 历史清空股票 -->
 <template>
   <div style="">
-    <span v-for="item of data" style="width: 30%; display: inline-block">
+    <span v-for="item of data" style="width: 50%; display: inline-block">
       <span>{{item.stockName}}</span>
-      <StockKLine :with-zoom="false" :stock-num="item.stockNum" :start-date="'2023-06-01'" :end-date="new Date()"/>
+      <StockKLine :with-zoom="false" :stock-num="item.stockNum" :start-date="'2024-06-01'" :end-date="new Date()"/>
     </span>
   </div>
 </template>

@@ -1,7 +1,7 @@
 <!--多只股走势组件 -->
 <template>
   <div>
-    <IndustrySelector :change="(val)=>{param.industry = val}"/>
+    <IndustrySelector :multiple='true' :change="(val)=>{param.industry = val}"/>
     <StockSelector :multiple='true' :change="(val)=>{param.stockNums = val}"/>
 
     <el-date-picker
@@ -26,6 +26,7 @@
 import {queryKLine} from "@/request/stock";
 import StockSelector from "@/views/components/StockSelector";
 import IndustrySelector from "@/views/components/IndustrySelector";
+import moment from "moment";
 
 export default {
   name: "StockTrendEcharts",
@@ -37,7 +38,7 @@ export default {
       param:{
         industry:"",
         stockNums:"600408",
-        startDate:"2023-10-01",
+        startDate:moment().subtract(30,'days').format("YYYY-MM-DD"),
         endDate:new Date(),
       },
       chartsData: {

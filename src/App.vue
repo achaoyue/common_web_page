@@ -54,7 +54,7 @@ export default {
   }
 
   .main-content {
-    width: 90%;
+    width: 96%;
     min-height: calc(100vh - 198px);
     margin: 0 auto;
   }
