@@ -42,8 +42,8 @@
       <div v-if="data != null && data.length > 0">
         <div class="tab_item" style="border: none;width: 200px"></div>
         <template v-for="i of data[0].dayInfoDOS">
-          <div class="tab_item">涨幅</div>
-          <div class="tab_item">收盘价</div>
+          <div class="tab_item" :key="i.date+'3'">涨幅</div>
+          <div class="tab_item" :key="i.date+'4'">收盘价</div>
         </template>
       </div>
       <div v-for="item of data" :key="item.stockNum">
@@ -52,10 +52,25 @@
         </div>
         <div class="tab_item">{{ item.stockNum }}</div>
         <template v-for="i of item.dayInfoDOS">
-          <div class="tab_item">{{ i.upDownRange }}</div>
-          <div class="tab_item">{{ i.close }}</div>
+          <div class="tab_item" :key="item.stockNum+i.date+'1'">{{ i.upDownRange }}</div>
+          <div class="tab_item" :key="item.stockNum+i.date+'2'">{{ i.close }}</div>
         </template>
 
+      </div>
+    </div>
+    <div>
+      <h2>k线明细</h2>
+      <div
+          class="perfect_img"
+          v-for="(item, index) in data"
+          :key="index"
+      >
+        <div style="text-align: center">{{index}},{{item.stockName}},{{item.stockNum}}</div>
+        <StockImg
+            :stock-num="item.stockNum"
+            :right-x="rightX"
+            :ppx="ppx"
+            :mouse-move-notice="mouseChange"></StockImg>
       </div>
     </div>
   </div>
@@ -66,11 +81,14 @@ import {getDayPeriodList} from "@/request/stock";
 import moment from "moment";
 import DetailLink from "@/views/components/DetailLink";
 import globalFunction from "@/globalFunction";
+import StockImg from "@/views/components/StockImg";
 export default {
   name: "PerMonitor",
-  components: {DetailLink},
+  components: {StockImg, DetailLink},
   data:function (){
     return {
+      ppx:0,
+      rightX:3,
       stockNums:globalFunction.getCookies("stockNumsText"),
       param:{
         stockNums:"",
@@ -86,6 +104,12 @@ export default {
   },
 
   methods:{
+    mouthMove(event){
+      this.ppx = event.offsetX
+    },
+    mouseChange(x){
+      this.ppx = x;
+    },
     query(){
       if (!this.stockNums || this.stockNums == ''){
         return;
@@ -104,6 +128,52 @@ export default {
 </script>
 
 <style scoped>
+.pp{
+  margin-right:8px;
+  float: right;
+  position: absolute ;
+  width: 1px;
+  height: 80px;
+  bottom: 130px;
+  border-left: 3px solid #0000ff6b;
+}
+.ppx{
+  height: 180px;
+  bottom: 30px;
+  border-left: 1px solid #0000ff6b;
+}
+.el-input{
+  width: 100%
+}
+.perfect_list{
+  background-color:#f9ebe8e6;
+  display: block;
+  text-align: center;
+  padding-bottom : 10px;
+}
+.perfect_img{
+  display :inline-block;
+  max-width: 300px;
+  min-width: 300px;
+  border: solid 1px black;
+  position: relative;
+}
+.perfect_img img{
+
+}
+.perfect_img  span{
+  white-space: normal;
+  word-break: break-all;
+}
+.idx_op{
+  background-color: white;
+}
+.idx_op span{
+  background-color: #f3d6d6;
+  border-radius :3px;
+  margin :1px 3px 0px;
+  padding: 0px 3px 0px;
+}
 .time_block{
   display: inline-block;
   width :300px;
@@ -114,4 +184,5 @@ export default {
   width: 100px;
   text-align: center;
 }
+
 </style>

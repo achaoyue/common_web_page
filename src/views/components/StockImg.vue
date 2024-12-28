@@ -2,8 +2,7 @@
   <div>
     <div v-if="type != 'NEW'" class="imgDiv" style="position: relative">
       <img @mousemove="mouthMove()" @mouseout="mouseOut" width="100%" :src="getSrc"/>
-      <div v-if="rightX != null" class="pp" :style="{right: rightX+'px'}">
-      </div>
+
       <div class="pp ppx" :style="{left: (ppx||opPpx)+'px'}">
       </div>
       <div class="idx_op">
@@ -12,36 +11,7 @@
         <span @click="changeImg('CCI')">cci</span>
         <span @click="changeImg('TIME')">time</span>
         <span @click="changeImg('FIVE')">five</span>
-        <span @click="changeImg('NEW')">NEW</span>
         <span><a target="_blank" :href="'http://quote.eastmoney.com/concept/'+getStockNum2()+'.html#'">详情</a></span>
-        <FavoriteSpan :stock-num="stockNum" :is-favorite="opFavorite" :change="(op)=>{this.opFavorite = op}"/>
-        <StockDetailPop
-            :key="stockNum+'_detail_pop'"
-            :stock-num="stockNum"
-            :default-start-date="defaultStart || start"
-            :default-end-date="defaultEnd || end" />
-      </div>
-    </div>
-    <div v-if="type == 'NEW'">
-      <StockKLine
-          :fix-id="'stockImg'"
-          :stock-num="stockNum"
-          :start-date="defaultStart || start"
-          :end-date="defaultEnd || end"/>
-      <div class="idx_op">
-        <span @click="changeImg('MACD')">macd</span>
-        <span @click="changeImg('KDJ')">kdj</span>
-        <span @click="changeImg('CCI')">cci</span>
-        <span @click="changeImg('TIME')">time</span>
-        <span @click="changeImg('FIVE')">five</span>
-        <span @click="changeImg('NEW')">NEW</span>
-        <span><a target="_blank" :href="'http://quote.eastmoney.com/concept/'+getStockNum2()+'.html#'">详情</a></span>
-        <FavoriteSpan :stock-num="stockNum" :is-favorite="opFavorite" :change="(op)=>{this.opFavorite = op}"/>
-        <StockDetailPop
-            :key="stockNum+'_detail_pop'"
-            :stock-num="stockNum"
-            :default-start-date="defaultStart || start"
-            :default-end-date="defaultEnd || end" />
       </div>
     </div>
   </div>
