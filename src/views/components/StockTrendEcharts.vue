@@ -8,12 +8,14 @@
         v-model="param.startDate"
         type="date"
         format="yyyy-MM-dd"
+        value-format="yyyy-MM-dd"
         placeholder="选择开始日期">
     </el-date-picker>
     <el-date-picker
         v-model="param.endDate"
         type="date"
         format="yyyy-MM-dd"
+        value-format="yyyy-MM-dd"
         placeholder="选择结束日期">
     </el-date-picker>
     <el-button @click="initK">查询</el-button>
@@ -114,7 +116,6 @@ export default {
   },
   methods:{
     initK(){
-      console.log(this.param)
       queryKLine(this.param).then((resp)=>{
         resp = resp.data;
         this.chartsData.xAxis.data = resp.xaxis;

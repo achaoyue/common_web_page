@@ -28,6 +28,9 @@
           :default-start-date="param.startDate"
           :default-end-date="param.endDate" />
     </div>
+
+    <UpTopTable></UpTopTable>
+
   </div>
 </template>
 <script>
@@ -37,6 +40,8 @@ import StockSelector from "@/views/components/StockSelector";
 import StockKLine from "@/views/components/StockKLine";
 import moment from "moment";
 import StockDetailPop from "@/views/components/StockDetailPop";
+import TradeDetailChart from "@/views/components/TradeDetailChart";
+import UpTopTable from "@/views/components/UpTopTable";
 export default {
   data(){
     return {
@@ -52,6 +57,8 @@ export default {
 
   },
   components:{
+    UpTopTable,
+    TradeDetailChart,
     StockDetailPop,
     StockSelector,
     StockKLine,
@@ -60,12 +67,10 @@ export default {
   },
   methods:{
     log(x){
-      console.log(x)
     },
     doQuery(){
       let _this = this;
       this.param.stockNums.forEach(e=>{
-        console.log(_this.$refs['child'+e])
         _this.$refs['child'+e][0].initK();
       })
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="type != 'NEW'" class="imgDiv" style="position: relative">
-      <img @mousemove="mouthMove()" @mouseout="mouseOut" width="100%" :src="getSrc()"/>
+      <img @mousemove="mouthMove()" @mouseout="mouseOut" width="100%" :src="getSrc"/>
       <div v-if="rightX != null" class="pp" :style="{right: rightX+'px'}">
       </div>
       <div class="pp ppx" :style="{left: (ppx||opPpx)+'px'}">
@@ -52,6 +52,7 @@ import FavoriteSpan from "@/views/components/FavoriteSpan";
 import StockDetailPop from "@/views/components/StockDetailPop";
 import moment from "moment";
 import StockKLine from "@/views/components/StockKLine";
+import globalFunction from "@/globalFunction";
 
 export default {
   name: "StockImg",
@@ -77,7 +78,6 @@ export default {
   },
   watch: {
     allType(nVal) {
-      console.log("watch execute:",nVal)
       if (!nVal) {
         return;
       }
@@ -91,6 +91,18 @@ export default {
     }
     this.opFavorite = this.favorite;
   },
+  computed:{
+    getSrc() {
+      if (["MACD", "CCI", "KDJ"].indexOf(this.type) > -1) {
+        return 'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid=' + this.getStockNum() + '&UnitWidth=-6&imageType=KXL&EF=&Formula=' + (this.type) + '&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_='+Math.random();
+      } else if ("TIME" == this.type) {
+        return 'https://webquotepic.eastmoney.com/GetPic.aspx?imageType=r&type=&token=44c9d251add88e27b65ed86506f6e5da&nid=' + this.getStockNum() + '&timespan='+Math.round(moment().valueOf()/1000);
+      }else if ("FIVE" == this.type) {
+        return 'https://webquotepic.eastmoney.com/GetPic.aspx?imageType=t&type=M4&token=44c9d251add88e27b65ed86506f6e5da&nid='+this.getStockNum()+ '&timespan='+Math.round(moment().valueOf()/1000);
+      }
+
+    }
+  },
   methods: {
     mouthMove() {
       this.opPpx = event.offsetX - 3;
@@ -101,16 +113,7 @@ export default {
     mouseOut() {
 
     },
-    getSrc() {
-      if (["MACD", "CCI", "KDJ"].indexOf(this.type) > -1) {
-        return 'http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid=' + this.getStockNum() + '&UnitWidth=-6&imageType=KXL&EF=&Formula=' + (this.type) + '&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373'
-      } else if ("TIME" == this.type) {
-        return 'https://webquotepic.eastmoney.com/GetPic.aspx?imageType=r&type=&token=44c9d251add88e27b65ed86506f6e5da&nid=' + this.getStockNum() + '&timespan=1672321137'
-      }else if ("FIVE" == this.type) {
-        return 'https://webquotepic.eastmoney.com/GetPic.aspx?imageType=t&type=M4&token=44c9d251add88e27b65ed86506f6e5da&nid='+this.getStockNum()+'&timespan=1672584931'
-      }
 
-    },
     getStockNum() {
       if (this.stockNum.startsWith("6")) {
         return "1." + this.stockNum;
@@ -139,6 +142,7 @@ export default {
 <style scoped>
 .imgDiv {
   display: inline-block;
+  width: 100%;
 }
 
 .imgDiv img {
@@ -150,8 +154,8 @@ export default {
   float: right;
   position: absolute;
   width: 1px;
-  height: 90%;
-  bottom: 20px;
+  height: 80%;
+  bottom: 50px;
   border-left: 3px solid #0000ff6b;
 }
 
@@ -164,7 +168,8 @@ export default {
 .idx_op {
   background-color: white;
   padding: 10px 0 0 10px;
-  word-wrap: break-word;
+  word-wrap: normal;
+  word-break: keep-all;
 }
 
 .idx_op span {

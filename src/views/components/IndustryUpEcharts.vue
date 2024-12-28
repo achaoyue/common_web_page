@@ -43,17 +43,22 @@ export default {
             label:{
               backgroundColor:'#6a7985'
             }
-          }
+          },
+
         },
         grid: {
           left: '20px',
-          right: '150px',
+          right: '10px',
           bottom: '150px',
           containLabel: true
         },
         dataZoom:[
           {
             type:"slider"
+          },
+          {
+            type:"slider",
+            yAxisIndex: [0],
           }
         ],
         legend: {
@@ -92,7 +97,21 @@ export default {
   mounted(){
     var dom = document.getElementById("k-chart");
     this.kChart = this.echarts.init(dom);
-    // this.kChart.setOption(this.chartsData)
+    this.kChart.getZr().on("click",params => {
+      let target = params.target;
+      if(!(target && target.z === 3)){
+        return;
+      }
+      let parent = target.parent.parent;
+      let index = (parent.__ecComponentInfo || parent.parent.__ecComponentInfo).index;
+      let option = this.kChart.getOption();
+      this.kChart.dispatchAction({
+        type: 'showTip',
+        seriesIndex: index,
+        dataIndex: 0
+      })
+
+    })
     this.initIndustryLine();
   },
   methods:{
@@ -100,7 +119,7 @@ export default {
       queryIndustryLine(this.param).then((resp)=>{
         resp = resp.data;
         this.chartsData.xAxis.data = resp.xaxis;
-        resp.series.forEach(e=>{e.type='line';e.emphasis = {focus: 'series'}})
+        resp.series.forEach(e=>{e.type='line';e.emphasis = {focus: 'series'},e.triggerLineEvent=true;e.animation=false})
         this.chartsData.series = resp.series;
         this.chartsData.legend.data = this.chartsData.series.map(e=>e.name).sort(function compareFunction(param1, param2) {
           return param1.localeCompare(param2,"zh");

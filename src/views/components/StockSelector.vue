@@ -1,6 +1,6 @@
 <!--股票选择组件-->
 <template>
-  <div>
+  <div style="display: inline-block">
     <el-select v-model="selectNum" :multiple="this.multiple" filterable clearable @change="stockChange(1)" placeholder="请选择">
       <el-option
           v-for="item of stockList"

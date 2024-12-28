@@ -22,12 +22,10 @@ export default {
   },
   methods:{
     log(x){
-      console.log(x)
     },
     doQuery(){
       let _this = this;
       this.param.stockNums.forEach(e=>{
-        console.log(_this.$refs['child'+e])
         _this.$refs['child'+e][0].initK();
       })
 

@@ -40,13 +40,36 @@
         <div>相关板块:{{ !stockDetail ? null : stockDetail.stockDO.belongPlate }}</div>
         <div>总市值:{{ !stockDetail ? null : formatNum(stockDetail.stockDO.totalMarketValue) }}</div>
         <div>当日涨停:{{upTop()}}</div>
+        <div>历史涨跌次数:{{ !stockDetail ? null : stockDetail.historyUpDown.upSize }}/{{ !stockDetail ? null : stockDetail.historyUpDown.downSize }}/{{ !stockDetail ? null : stockDetail.historyUpDown.allSize }}</div>
 
         <div>换手率:{{ !stockDetail ? null : stockDetail.stockDayInfoDOS[stockDetail.stockDayInfoDOS.length-1].turnOverrate }}</div>
         <div>当日涨幅:{{ !stockDetail ? null : stockDetail.stockDayInfoDOS[stockDetail.stockDayInfoDOS.length-1].upDownRange }}</div>
         <div>MACD:{{ macdInfo() }}</div>
-        <div>资金流:{{ stockFundInfo() }}</div>
+        <div>资金流:{{ stockFundInfo() }}, 占比: {{stockFundPer()}}</div>
         <div>异动情况:{{ !stockDetail ? null : stockDetail.abnormal }}</div>
         <div>行业上涨情况:{{ (!stockDetail || !stockDetail.industryUpDown) ? null : stockDetail.industryUpDown.topSize }}/{{ (!stockDetail || !stockDetail.industryUpDown) ? null : stockDetail.industryUpDown.upSize }}/{{ (!stockDetail || !stockDetail.industryUpDown) ? null : stockDetail.industryUpDown.allSize }}</div>
+        <div v-if="this.stockDetail && this.stockDetail.distribution" style="height: 200px">
+          <BarChart :stock-num="stockNum" :data="{value:this.stockDetail.distribution}" />
+        </div>
+        <div v-if="this.stockDetail && this.stockDetail.stockDayInfoDOS" style="height: 400px">
+          <LineChart :stock-num="stockNum" :data="computeOverRate"/>
+        </div>
+        <div style="height: 500px">
+          <TradeDetailChart
+              :stock-num="stockNum"
+              :pre-close="!stockDetail ? null : stockDetail.stockDayInfoDOS[stockDetail.stockDayInfoDOS.length-1].preClose"
+              :date="!stockDetail ? null : stockDetail.stockDayInfoDOS[stockDetail.stockDayInfoDOS.length-1].date">
+          </TradeDetailChart>
+        </div>
+        <div v-if="this.stockDetail && this.stockDetail.upDown">
+          <div><span :style="{display:'inline-block',width:this.stockDetail.upDown.upSize/10+'px',backgroundColor:'red',height:'20px'}"> </span>{{this.stockDetail.upDown.upSize}}</div>
+          <div><span :style="{display:'inline-block',width:this.stockDetail.upDown.downSize/10+'px',backgroundColor:'green',height:'20px'}"> </span>{{this.stockDetail.upDown.downSize}}</div>
+          <div><span :style="{display:'inline-block',width:this.stockDetail.upDown.topSize/10+'px',backgroundColor:'blue',height:'20px'}"> </span>{{this.stockDetail.upDown.topSize}}</div>
+        </div>
+        <div>
+          <img src="http://webquoteklinepic.eastmoney.com/GetPic.aspx?nid=1.000001&UnitWidth=-6&imageType=KXL&EF=&Formula=CCI&AT=0&&type=&token=44c9d251add88e27b65ed86506f6e5da&wbp2u=|0|0|0|web&_=0.07544766952719373"/>
+          <img @click="changeTimeSpan" :src="'https://webquotepic.eastmoney.com/GetPic.aspx?imageType=t&type=M4&token=44c9d251add88e27b65ed86506f6e5da&nid=1.000001&timespan='+timespan"/>
+        </div>
       </div>
     </el-dialog>
   </span>
@@ -58,17 +81,22 @@ import moment from "moment";
 import StockKLine from "@/views/components/StockKLine";
 import DetailLink from "@/views/components/DetailLink";
 import FavoriteSpan from "@/views/components/FavoriteSpan";
+import globalFunction from "@/globalFunction";
+import BarChart from "@/views/components/BarChart";
+import LineChart from "@/views/components/LineChart";
+import TradeDetailChart from "@/views/components/TradeDetailChart";
 
 export default {
   name: "StockDetailPop",
-  components: {FavoriteSpan, DetailLink, StockKLine},
+  components: {TradeDetailChart, LineChart, BarChart, FavoriteSpan, DetailLink, StockKLine},
   data() {
     return {
       uniqueKey:null,
       show: false,
       stockDetail: null,
       startDate:null,
-      endDate:null
+      endDate:null,
+      timespan:Math.round(new Date().getTime()/1000)
     }
   },
   props: {
@@ -95,9 +123,43 @@ export default {
       this.queryStockDetail();
     },
   },
+  computed:{
+    computeOverRate(){
+      let x = this.stockDetail.stockDayInfoDOS.map(e=>e.date);
+      let y = ["-","-","-","-"];
+      let y2 = ["-","-","-","-"];
+      let y3 = ["-","-","-","-","-","-","-","-","-"];
+      for (let i = 4; i < this.stockDetail.stockDayInfoDOS.length; i++) {
+        y.push(this.stockDetail.stockDayInfoDOS[i - 4].turnOverrate
+            + this.stockDetail.stockDayInfoDOS[i - 3].turnOverrate
+            + this.stockDetail.stockDayInfoDOS[i - 2].turnOverrate
+            + this.stockDetail.stockDayInfoDOS[i - 1].turnOverrate
+            + this.stockDetail.stockDayInfoDOS[i].turnOverrate);
+        y2.push(this.stockDetail.stockDayInfoDOS[i].turnOverrate)
+        if (i-9 >= 0){
+          y3.push(this.stockDetail.stockDayInfoDOS[i - 9].turnOverrate
+              + this.stockDetail.stockDayInfoDOS[i - 8].turnOverrate
+              + this.stockDetail.stockDayInfoDOS[i - 7].turnOverrate
+              + this.stockDetail.stockDayInfoDOS[i - 6].turnOverrate
+              + this.stockDetail.stockDayInfoDOS[i - 5].turnOverrate
+              + this.stockDetail.stockDayInfoDOS[i - 4].turnOverrate
+              + this.stockDetail.stockDayInfoDOS[i - 3].turnOverrate
+              + this.stockDetail.stockDayInfoDOS[i - 2].turnOverrate
+              + this.stockDetail.stockDayInfoDOS[i - 1].turnOverrate
+              + this.stockDetail.stockDayInfoDOS[i].turnOverrate);
+        }
+      }
+      return {
+        x:x,
+        y:[y,y2,y3]
+      }
+    }
+  },
   methods: {
+    changeTimeSpan(){
+      this.timespan = Math.round(new Date().getTime()/1000);
+    },
     onCloseDialog() {
-      console.log(this.show);
     },
     clickShowDia() {
       this.show = true;
@@ -124,7 +186,6 @@ export default {
         endDate: moment(this.endDate || this.defaultEndDate).format("YYYY-MM-DD"),
       }
       queryDetail(param).then((resp) => {
-        console.log(resp);
         this.stockDetail = resp.data;
       })
     },
@@ -137,7 +198,6 @@ export default {
       let difMacd = parseInt((this.stockDetail.stockDayInfoDOS[size - 1].macd - this.stockDetail.stockDayInfoDOS[size - 2].macd) * 100)
       str += difMacd > 0 ? "macd上涨" : "macd下降z";
       str += difMacd;
-      console.log(difMacd)
 
       return str;
     },
@@ -152,6 +212,14 @@ export default {
        }
        return "资金流出" + superBigMoney/10000
     },
+    stockFundPer(){
+      if (!this.stockDetail || !this.stockDetail.fundInfoDO) {
+        return "";
+      }
+      let fundInfo = this.stockDetail.fundInfoDO;
+      let superBigMoney = fundInfo.superBigMoneyIn - fundInfo.superBigMoneyOut;
+      return (superBigMoney/this.stockDetail.stockDO.flowMarketValue*100).toFixed(2)
+    },
     refresh(){
       this.$refs[this.stockNum].initK();
       this.stockDetail = null;
@@ -161,7 +229,7 @@ export default {
       if (!this.stockDetail || !this.stockDetail.stockDayInfoDOS) {
         return "";
       }
-      return this.stockDetail.stockDayInfoDOS[this.stockDetail.stockDayInfoDOS.length-1].preClose*1.1
+      return Math.round(this.stockDetail.stockDayInfoDOS[this.stockDetail.stockDayInfoDOS.length-1].preClose*1.1*100)/100
     }
   }
 }

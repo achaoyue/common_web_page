@@ -48,6 +48,7 @@
             <el-radio-button label="CCI"></el-radio-button>
             <el-radio-button label="TIME"></el-radio-button>
             <el-radio-button label="FIVE"></el-radio-button>
+            <el-radio-button label="NEW"></el-radio-button>
           </el-radio-group>
         </div>
       </div>

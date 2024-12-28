@@ -18,7 +18,13 @@ export const getNoticeList = p => get('stock/getNoticeList', p);
 export const queryIndustryLine = p => get("stock/queryIndustryLine", p)
 export const queryKLine = p => get("stock/queryKLine", p)
 export const queryDetail = p => get("stock/detail", p)
-export const stockSelect = p => get("stock/stockSelect", p)
+export const stockSelect = p => post("stock/stockSelect", p)
+export const startMonitor = p => post("stock/monitor/start", p)
+export const stopMonitor = p => post("stock/monitor/stop", p)
+export const monitorList = p => get("stock/monitor/list", p)
+export const tradeDetail = p => get("stock/trade/detail", p)
+export const upTopList = p => get("stock/upTop/list", p)
+export const getDayPeriodList = p => get("stock/getDayPeriodList", p)
 
 
 

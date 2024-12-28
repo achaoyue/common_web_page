@@ -51,18 +51,14 @@
           v-for="(item, index) in stockList"
           :key="index"
       >
-        <div>{{index}},{{item}}</div>
-        <StockKLine
-            v-if="allType == 'NEW'"
-            :stock-num="item"
-                    :start-date="startDate"
-                    :end-date="endDate"/>
+        <div>{{index}}, {{item}}</div>
         <StockImg
-            v-if="allType != 'NEW'"
             :stock-num="item"
             :right-x="rightX"
             :ppx="ppx"
             :all-type="allType"
+            :default-start="startDate"
+            :default-end="endDate"
             :mouse-move-notice="mouseChange"></StockImg>
 
       </div>
@@ -95,9 +91,9 @@ export default {
       stockListStr:'',
       stockList:[],
       type:"CCI",
-      date:new Date(),
-      startDate:moment().subtract(30,'days').format("YYYY-MM-DD"),
-      endDate:new Date(),
+      date:moment().format("YYYY-MM-DD"),
+      startDate:moment().subtract(90,'days').format("YYYY-MM-DD"),
+      endDate:moment().format("YYYY-MM-DD")
     }
   },
   mounted() {
@@ -108,12 +104,14 @@ export default {
   },
   methods: {
     mouthMove(event){
-      console.log("mouth move",event.offsetX)
       this.ppx = event.offsetX
     },
     stockListChange(){
       this.stockList.length = 0;
-      this.stockList = this.stockListStr.split("\n");
+      this.stockList = this.stockListStr.replace(/[ ,\n\r]+/g, ',')
+          .split(',')
+          .map(item => item.trim())
+          .filter(item => item !== '');
     },
     cc(){
       bigThan({date:moment(this.date).format("YYYY-MM-DD")}).then((resp)=>{

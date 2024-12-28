@@ -19,7 +19,14 @@ export default new Router({
     {
       path: '/',
       name: 'Home',
-      redirect: { name: 'PerfectList' }
+      // redirect: { name: 'PerfectList' }
+      component: () => import(/* webpackChunkName: "login" */ '@/views/page/IndexPage'),
+      meta: {
+        showHeader:false,
+        showFooter:false,
+        requireAuth: false,
+        title: '测试 - 奇文股票'
+      }
     },
     {
       path: '/test',
@@ -93,6 +100,39 @@ export default new Router({
         showFooter:true,
         requireAuth: false,
         title: '逻辑选股'
+      }
+    },
+    {
+      path: '/lineView',
+      name: 'LineViewPanel',
+      component: () => import(/* webpackChunkName: "login" */ '@/views/page/LineViewPanel'),
+      meta: {
+        showHeader:true,
+        showFooter:true,
+        requireAuth: false,
+        title: '图表查询'
+      }
+    },
+    {
+      path: '/monitor',
+      name: '监控',
+      component: () => import(/* webpackChunkName: "login" */ '@/views/page/StockMonitor'),
+      meta: {
+        showHeader:true,
+        showFooter:true,
+        requireAuth: false,
+        title: '监控'
+      }
+    },
+    {
+      path: '/perMonitory',
+      name: '监控',
+      component: () => import(/* webpackChunkName: "login" */ '@/views/page/cooperate/PerMonitor'),
+      meta: {
+        showHeader:false,
+        showFooter:false,
+        requireAuth: false,
+        title: '监控'
       }
     },
   ]

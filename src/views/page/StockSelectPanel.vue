@@ -5,17 +5,58 @@
   <div class="perfect_list">
     <div>
       <div style="text-align: left">
-        <el-radio-group v-model="selectId">
-          <el-radio-button label="STRICT"></el-radio-button>
-        </el-radio-group>
-        <el-date-picker
-            v-model="date"
-            type="date"
-            @change="cc"
-            value-format="yyyy-MM-dd"
-            format="yyyy-MM-dd"
-            placeholder="选择日期">
-        </el-date-picker>
+        <el-select v-model="selectId">
+          <el-option value="STRICT" label="严格选股"></el-option>
+          <el-option value="MINUTES" label="分钟涨幅选股"></el-option>
+          <el-option value="HIGHEST" label="过历史最高"></el-option>
+          <el-option value="VOL_HIGH" label="成交量突破"></el-option>
+          <el-option value="UP_TOP" label="涨停"></el-option>
+          <el-option value="CRASH_TOP" label="烂板"></el-option>
+          <el-option value="TIME_ABNORMAL" label="分时异动"></el-option>
+          <el-option value="THREE_VOL_UP" label="三日连续放量"></el-option>
+          <el-option value="INDUSTRY" label="行业选择"></el-option>
+          <el-option value="NEW_TOP" label="突破新高"></el-option>
+          <el-option value="NAME_SELECT" label="名称过滤"></el-option>
+          <el-option value="UP_DOWN_SELECT" label="k线幅度选择"></el-option>
+          <el-option value="STOCK_NUM" label="股票编码"></el-option>
+
+        </el-select>
+        <div class="time_block">
+          <el-date-picker
+              v-model="date"
+              type="date"
+              value-format="yyyy-MM-dd"
+              format="yyyy-MM-dd"
+              placeholder="选择日期">
+          </el-date-picker>
+        </div>
+        <div class="time_block" v-if="selectId == 'UP_TOP'">
+          连涨天数:<div style="display: inline-block;width: 100px"><el-input type="number" v-model="param.daySize"/></div>
+          严格:<el-switch
+              v-model="param.force"
+              active-color="#13ce66"
+              inactive-color="#ff4949">
+          </el-switch>
+        </div>
+        <div class="time_block" v-if="selectId == 'NAME_SELECT'">
+          股票名称:<div style="display: inline-block"><el-input v-model="param.name"/></div>
+        </div>
+        <div class="time_block" v-if="selectId == 'NEW_TOP'">
+          序列:<div style="display: inline-block;width: 300px"><el-input type="text" v-model="param.series"/></div>
+        </div>
+        <div class="time_block" v-if="selectId == 'UP_DOWN_SELECT'">
+          序列:<div style="display: inline-block;width: 300px"><el-input type="text" v-model="param.series"/></div>
+        </div>
+        <IndustrySelector v-if="selectId == 'INDUSTRY'" :multiple='false' :change="(val)=>{param.industry = val}"/>
+        <el-button @click="cc">查询</el-button>
+        <el-input
+            v-if="selectId == 'STOCK_NUM'"
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 10}"
+            @change="stockListChange"
+            placeholder="请输入内容"
+            v-model="stockListStr">
+        </el-input>
       </div>
       <div>
         <el-radio-group v-model="allType">
@@ -27,28 +68,35 @@
           <el-radio-button label="NEW"></el-radio-button>
         </el-radio-group>
       </div>
-      <div v-if="allType == 'NEW'">
-        <el-date-picker
-            v-model="startDate"
-            type="date"
-            format="yyyy-MM-dd"
-            value-format="yyyy-MM-dd"
-            placeholder="选择开始日期">
-        </el-date-picker>
-        <el-date-picker
-            v-model="endDate"
-            type="date"
-            format="yyyy-MM-dd"
-            value-format="yyyy-MM-dd"
-            placeholder="选择结束日期">
-        </el-date-picker>
+      <div style="text-align: left" v-if="allType == 'NEW'">
+        <div class="time_block">
+          <el-date-picker
+              v-model="startDate"
+              type="date"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
+              placeholder="选择开始日期">
+          </el-date-picker>
+        </div>
+        <div class="time_block">
+          <el-date-picker
+              v-model="endDate"
+              type="date"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
+              placeholder="选择结束日期">
+          </el-date-picker>
+        </div>
+      </div>
+      <div v-if="!done">
+        请求中。。。。
       </div>
       <div
           class="perfect_img"
           v-for="(item, index) in stockList"
           :key="index"
       >
-        <div>{{index}},{{item.stockName}},{{item.stockNum}},{{item.industry}}</div>
+        <div>{{index}},{{item.stockName}},{{item.stockNum}},{{item.industry}},{{formatMarket(item)}}</div>
         <StockImg
             :stock-num="item.stockNum"
             :right-x="rightX"
@@ -57,6 +105,7 @@
             :default-start="startDate"
             :default-end="endDate"
             :mouse-move-notice="mouseChange"></StockImg>
+        <div>{{item.belongPlate}}</div>
 
       </div>
     </div>
@@ -71,16 +120,22 @@ import FavoriteSpan from "@/views/components/FavoriteSpan";
 import moment from "moment";
 import StockImg from "@/views/components/StockImg";
 import StockKLine from "@/views/components/StockKLine";
+import IndustrySelector from "@/views/components/IndustrySelector";
+import globalFunction from "@/globalFunction";
 
 export default {
   name: 'StockViewPanel',
   components:{
+    IndustrySelector,
     StockKLine,
     StockImg,
     FavoriteSpan
   },
   data() {
     return {
+      done:true,
+      param:{},
+      industry:null,
       ppx:0,
       rightX:3,
       allType:null,
@@ -89,7 +144,7 @@ export default {
       stockList:[],
       type:"CCI",
       date:moment().format("YYYY-MM-DD"),
-      startDate:moment().subtract(30,'days').format("YYYY-MM-DD"),
+      startDate:moment().subtract(90,'days').format("YYYY-MM-DD"),
       endDate:moment().format("YYYY-MM-DD"),
       selectId:'STRICT'
     }
@@ -102,8 +157,10 @@ export default {
   },
   methods: {
     mouthMove(event){
-      console.log("mouth move",event.offsetX)
       this.ppx = event.offsetX
+    },
+    formatMarket(item){
+      return  globalFunction.formatNum(item.flowMarketValue,0)
     },
     cc(){
       bigThan({date:moment(this.date).format("YYYY-MM-DD")}).then((resp)=>{
@@ -117,16 +174,26 @@ export default {
       queryDayLine(param).then(resp=>{
         let days = resp.data.map(e=>e.date);
         let dayIndex = days.indexOf(moment(this.date).format("YYYY-MM-DD"));
+        dayIndex = dayIndex === -1 ? days.length -1 : dayIndex;
         this.startDate = moment(this.date).subtract(60,'days').format("YYYY-MM-DD");
-        this.endDate = days[Math.min(dayIndex+2, days.length-1)];
-        console.log(this.endDate)
-        stockSelect({date:moment(this.date).format("YYYY-MM-DD"),selectId:this.selectId}).then(resp=>{
+        this.endDate = days[Math.min(dayIndex, days.length-1)];
+        let p = {
+          date: moment(this.date).format("YYYY-MM-DD"),
+          selectId: this.selectId,
+          ...this.param
+        }
+        this.done = false;
+        this.stockList = [];
+        stockSelect(p).then(resp=>{
           this.stockList = resp.data
+          console.log(JSON.stringify(resp.data.map(e=>e.stockNum)))
           this.$notify({
             title: '成功',
             message: '查询成功',
             type: 'success'
           });
+        }).finally(()=>{
+          this.done = true;
         })
       })
 
@@ -157,7 +224,13 @@ export default {
     },
     mouseChange(x){
       this.ppx = x;
-    }
+    },
+    stockListChange(){
+      this.param.stockNums =JSON.stringify( this.stockListStr.replace(/[ ,\n\r]+/g, ',')
+          .split(',')
+          .map(item => item.trim())
+          .filter(item => item !== ''));
+    },
   }
 }
 </script>
@@ -194,6 +267,7 @@ export default {
   min-width 300px
   border solid 1px black
   position relative
+  vertical-align top
 }
 .perfect_img img{
 
@@ -211,4 +285,8 @@ export default {
   margin :1px 3px 0px;
   padding 0px 3px 0px;
 }
+  .time_block{
+    display: inline-block
+    width :300px;
+  }
 </style>

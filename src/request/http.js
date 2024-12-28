@@ -18,7 +18,7 @@ const loginTip = function() {
 }
 
 // 请求超时时间
-axios.defaults.timeout = 10000 * 5
+axios.defaults.timeout = 1000 * 100
 
 // 请求基础 URL
 axios.defaults.baseURL = '/api'
@@ -51,7 +51,6 @@ axios.interceptors.response.use(
   // 服务器状态码不是200的情况
   (error) => {
     if (error.response.status) {
-      console.log(error.response)
       switch(error.response.status) {
         case 404:
           Message.warning('接口不存在，请刷新重试或联系管理员')

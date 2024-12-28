@@ -11,7 +11,7 @@
     "babel-preset-env": "^1.7.0",
     "canvas-nest.js": "^2.0.4",
     "core-js": "^2.6.5",
-    "echarts": "^5.2.1",
+    "echarts": "^5.2.2",
     "element-ui": "^2.13.2",
     "hqchart": "^1.1.10303",
     "jquery": "^3.6.3",

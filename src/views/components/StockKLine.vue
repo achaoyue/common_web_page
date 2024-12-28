@@ -54,6 +54,7 @@ export default {
                 +'<br/>cci:'+dayInfo.cci
                 +'<br/>macd:'+dayInfo.macd
                 +'<br/>vol:'+dayInfo.volume
+                +'<br/>换手:'+dayInfo.turnOverrate
                 +'<br/>updown:'+dayInfo.upDownRange +'</div>';
           }
         },
@@ -210,6 +211,7 @@ export default {
         startDate: this.startDate,
         endDate: this.endDate
       }
+      this.kChart.clear();
       queryDayLine(this.param).then((resp) => {
         resp = resp.data;
         this.dayInfos = globalFunction.toMap(resp,"date");
@@ -268,7 +270,6 @@ export default {
         let macdData = resp.map(e => [e.date, e.macd, e.macd > 0 ? -1 : 1])
         let volData = resp.map(e => [e.date, e.volume])
         let markData = resp.map(e => e.close).sort((x, y) => x - y);
-        console.log(markData)
         let idxUp = Math.round(markData.length * 0.9);
         let idxDown = Math.round(markData.length * 0.1);
 
