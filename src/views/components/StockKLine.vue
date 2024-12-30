@@ -272,6 +272,8 @@ export default {
         let markData = resp.map(e => e.close).sort((x, y) => x - y);
         let idxUp = Math.round(markData.length * 0.9);
         let idxDown = Math.round(markData.length * 0.1);
+        let goodSplitPrice = markData[markData.length-1] - (markData[markData.length-1]-markData[0])*0.618
+        console.log(goodSplitPrice)
 
         let d1 = [];
         let d2 = [];
@@ -394,6 +396,11 @@ export default {
                   },
                   {
                     yAxis: markData[idxDown]
+                  },{
+                    yAxis: goodSplitPrice,
+                    lineStyle:{
+                      color:'black'
+                    }
                   }
                 ]
               }

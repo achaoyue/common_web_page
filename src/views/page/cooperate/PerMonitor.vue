@@ -13,7 +13,7 @@
       <div class="time_block">
         开始日期
         <el-date-picker
-            v-model="this.param.startTime"
+            v-model="param.startTime"
             type="date"
             format="yyyy-MM-dd"
             value-format="yyyy-MM-dd"
@@ -23,7 +23,7 @@
       <div class="time_block">
         结束日期
         <el-date-picker
-            v-model="this.param.endTime"
+            v-model="param.endTime"
             type="date"
             format="yyyy-MM-dd"
             value-format="yyyy-MM-dd"

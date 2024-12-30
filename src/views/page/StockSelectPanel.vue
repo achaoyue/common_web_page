@@ -19,6 +19,7 @@
           <el-option value="NAME_SELECT" label="名称过滤"></el-option>
           <el-option value="UP_DOWN_SELECT" label="k线幅度选择"></el-option>
           <el-option value="STOCK_NUM" label="股票编码"></el-option>
+          <el-option value="UP_RANGE" label="涨幅"></el-option>
 
         </el-select>
         <div class="time_block">
@@ -48,6 +49,10 @@
           序列:<div style="display: inline-block;width: 300px"><el-input type="text" v-model="param.series"/></div>
         </div>
         <IndustrySelector v-if="selectId == 'INDUSTRY'" :multiple='false' :change="(val)=>{param.industry = val}"/>
+        <div class="time_block" v-if="selectId == 'UP_RANGE'">
+          天数:<div style="display: inline-block;width: 100px"><el-input type="number" v-model="param.daySize"/></div>
+          幅度:<div style="display: inline-block;width: 100px"><el-input type="number" v-model="param.upRange"/></div>
+        </div>
         <el-button @click="cc">查询</el-button>
         <el-input
             v-if="selectId == 'STOCK_NUM'"

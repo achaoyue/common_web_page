@@ -54,14 +54,22 @@ export default {
           {
             scale:true,
             name: "vol",
-            type: 'value'
+            type: 'value',
+            splitNumber: 5,
+            splitLine: {
+              show: true, // 不显示y轴网格线
+            }
           },
           {
             scale:true,
             min:this.preClose*0.89,
             max:this.preClose*1.11,
             name: "price",
-            type: 'value'
+            type: 'value',
+            splitNumber: 5,
+            splitLine: {
+              show: false, // 不显示y轴网格线
+            }
           }
         ],
         series: [
@@ -83,6 +91,21 @@ export default {
             animation:false,
             itemStyle:{
               color:'blue'
+            }
+          },
+          {
+            type: 'line',
+            yAxisIndex:1,
+            markLine: {
+              symbol: ['none', 'none'],
+              data: [
+                {
+                  yAxis: 0,
+                  lineStyle:{
+                    color:'black'
+                  }
+                }
+              ]
             }
           }
         ]
@@ -136,6 +159,8 @@ export default {
         this.options.series[1].data = data.map(e=>{return {
           value:e[1]
         }})
+        this.options.series[2].markLine.data[0].yAxis=this.preClose;
+
         if (this.kChart.getOption() != null){
           this.options.dataZoom = this.kChart.getOption().dataZoom;
         }
@@ -144,6 +169,19 @@ export default {
 
         this.kChart.clear();
         this.kChart.setOption(this.options,false);
+
+        // let priceVolMap = {};
+        // for(let item of data){
+        //   if (priceVolMap[item[1]] == null){
+        //     priceVolMap[item[1]] = 0;
+        //   }
+        //   priceVolMap[item[1]] += parseInt(item[2]);
+        // }
+        // let priceKeys = Object.keys(priceVolMap).sort();
+        // this.options.xAxis.data = priceKeys;
+        // this.options.series[0].data = priceKeys.map(e=>priceVolMap[e])
+        // this.kChart.clear();
+        // this.kChart.setOption(this.options,false);
 
         data.forEach(e=>{
           if (parseInt(e[2])<200){

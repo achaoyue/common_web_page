@@ -27,6 +27,21 @@
       </div>
       <div style="width: 50%;display: inline-block">
         <StockKLine fix-id="detailPop" :ref="stockNum" :stock-num="stockNum" :start-date="startDate || defaultStartDate" :end-date="endDate || defaultEndDate"/>
+        <div style="height: 500px">
+          <TradeDetailChart
+              :stock-num="stockNum"
+              :pre-close="!stockDetail ? null : stockDetail.stockDayInfoDOS[stockDetail.stockDayInfoDOS.length-1].preClose"
+              :date="!stockDetail ? null : stockDetail.stockDayInfoDOS[stockDetail.stockDayInfoDOS.length-1].date">
+          </TradeDetailChart>
+        </div>
+        <div style="height: 500px">
+          <TradeDetailChart
+              :fix-id="'2'"
+              :stock-num="stockNum"
+              :pre-close="!stockDetail ? null : stockDetail.stockDayInfoDOS[stockDetail.stockDayInfoDOS.length-2].preClose"
+              :date="!stockDetail ? null : stockDetail.stockDayInfoDOS[stockDetail.stockDayInfoDOS.length-2].date">
+          </TradeDetailChart>
+        </div>
       </div>
       <div style="width: 50%;display: inline-block;text-align: left;vertical-align: top">
         <div>stockNum:
@@ -53,13 +68,6 @@
         </div>
         <div v-if="this.stockDetail && this.stockDetail.stockDayInfoDOS" style="height: 400px">
           <LineChart :stock-num="stockNum" :data="computeOverRate"/>
-        </div>
-        <div style="height: 500px">
-          <TradeDetailChart
-              :stock-num="stockNum"
-              :pre-close="!stockDetail ? null : stockDetail.stockDayInfoDOS[stockDetail.stockDayInfoDOS.length-1].preClose"
-              :date="!stockDetail ? null : stockDetail.stockDayInfoDOS[stockDetail.stockDayInfoDOS.length-1].date">
-          </TradeDetailChart>
         </div>
         <div v-if="this.stockDetail && this.stockDetail.upDown">
           <div><span :style="{display:'inline-block',width:this.stockDetail.upDown.upSize/10+'px',backgroundColor:'red',height:'20px'}"> </span>{{this.stockDetail.upDown.upSize}}</div>
