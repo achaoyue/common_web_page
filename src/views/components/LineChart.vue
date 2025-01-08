@@ -44,6 +44,10 @@ export default {
         dataZoom:[
           {
             type:"slider"
+          },
+          {
+            type:"slider",
+            yAxisIndex: [0],
           }
         ],
         series: [

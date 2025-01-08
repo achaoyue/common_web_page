@@ -44,6 +44,10 @@ export default {
           },
           {
             type:"inside"
+          },
+          {
+            type:"slider",
+            yAxisIndex: [0],
           }
         ],
         xAxis: {

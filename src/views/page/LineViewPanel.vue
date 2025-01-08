@@ -54,8 +54,11 @@ export default {
     stockListChange() {
       let lines = this.textContent.split("\n");
       let x = lines.map(e => e.split(/[ ,\n\r]/g)[0])
-      let y = lines.map(e => e.split(/[ ,\n\r]/g)[1])
-      this.data = {x: x, y: [y]}
+      let y = [];
+      for (let i = 1;i< lines.length;i++){
+        y.push(lines.map(e => e.split(/[ ,\n\r]/g)[i]))
+      }
+      this.data = {x: x, y: y}
     }
   }
 }

@@ -3,6 +3,7 @@
     <el-select v-model="param.monitorType" placeholder="请选择">
       <el-option label="成交明细" value="TRADE"></el-option>
       <el-option label="盘口" value="BUY_QUEUE"></el-option>
+      <el-option label="分钟监控" value="UP_MINUTE"></el-option>
     </el-select>
     <StockSelector :multiple='false' :change="(val)=>{param.stockNum = val}"/>
     买入:<div style="display: inline-block;width: 100px"><el-input type="number" v-model="param.maxBuy"/></div>
@@ -10,7 +11,16 @@
     封单量:<div style="display: inline-block;width: 100px"><el-input type="number" v-model="param.monitorBuyOne"/></div>
     <el-button @click="addMonitor">添加</el-button>
     <el-button type="primary" @click="getList">刷新</el-button>
-
+    <div>
+      <el-radio-group v-model="allType">
+        <el-radio-button label="MACD"></el-radio-button>
+        <el-radio-button label="KDJ"></el-radio-button>
+        <el-radio-button label="CCI"></el-radio-button>
+        <el-radio-button label="TIME"></el-radio-button>
+        <el-radio-button label="FIVE"></el-radio-button>
+        <el-radio-button label="NEW"></el-radio-button>
+      </el-radio-group>
+    </div>
     <div style="height: 10px"></div>
     <div
         class="perfect_img"

@@ -156,7 +156,7 @@ export default {
   width: 1px;
   height: 80%;
   bottom: 50px;
-  border-left: 3px solid #0000ff6b;
+  border-left: 3px solid #0000ff24;
 }
 
 .ppx {

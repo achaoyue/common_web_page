@@ -49,16 +49,16 @@
           序列:<div style="display: inline-block;width: 300px"><el-input type="text" v-model="param.series"/></div>
         </div>
         <IndustrySelector v-if="selectId == 'INDUSTRY'" :multiple='false' :change="(val)=>{param.industry = val}"/>
-        <div class="time_block" v-if="selectId == 'UP_RANGE'">
+        <div class="time_block" style="width: 500px" v-if="selectId == 'UP_RANGE'">
           天数:<div style="display: inline-block;width: 100px"><el-input type="number" v-model="param.daySize"/></div>
-          幅度:<div style="display: inline-block;width: 100px"><el-input type="number" v-model="param.upRange"/></div>
+          最小:<div style="display: inline-block;width: 100px"><el-input type="number" v-model="param.minRange"/></div>
+          最大:<div style="display: inline-block;width: 100px"><el-input type="number" v-model="param.maxRange"/></div>
         </div>
         <el-button @click="cc">查询</el-button>
         <el-input
             v-if="selectId == 'STOCK_NUM'"
             type="textarea"
             :autosize="{ minRows: 2, maxRows: 10}"
-            @change="stockListChange"
             placeholder="请输入内容"
             v-model="stockListStr">
         </el-input>
@@ -145,7 +145,7 @@ export default {
       rightX:3,
       allType:null,
       num:0,
-      stockListStr:'',
+      stockListStr:globalFunction.getCookies("stockNumsText"),
       stockList:[],
       type:"CCI",
       date:moment().format("YYYY-MM-DD"),
@@ -168,6 +168,10 @@ export default {
       return  globalFunction.formatNum(item.flowMarketValue,0)
     },
     cc(){
+      this.stockListChange();
+      if (this.stockListStr != null){
+        globalFunction.setCookies("stockNumsText",this.stockListStr);
+      }
       bigThan({date:moment(this.date).format("YYYY-MM-DD")}).then((resp)=>{
         this.rightX = 3+ parseInt(resp.data) * 4.23;
       });
@@ -181,7 +185,7 @@ export default {
         let dayIndex = days.indexOf(moment(this.date).format("YYYY-MM-DD"));
         dayIndex = dayIndex === -1 ? days.length -1 : dayIndex;
         this.startDate = moment(this.date).subtract(60,'days').format("YYYY-MM-DD");
-        this.endDate = days[Math.min(dayIndex, days.length-1)];
+        this.endDate = days[Math.min(dayIndex+2, days.length-1)];
         let p = {
           date: moment(this.date).format("YYYY-MM-DD"),
           selectId: this.selectId,
