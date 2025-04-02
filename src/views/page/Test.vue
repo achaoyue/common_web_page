@@ -28,9 +28,8 @@
           :default-start-date="param.startDate"
           :default-end-date="param.endDate" />
     </div>
-
+    <IndexPan></IndexPan>
     <UpTopTable></UpTopTable>
-
   </div>
 </template>
 <script>
@@ -42,6 +41,7 @@ import moment from "moment";
 import StockDetailPop from "@/views/components/StockDetailPop";
 import TradeDetailChart from "@/views/components/TradeDetailChart";
 import UpTopTable from "@/views/components/UpTopTable";
+import IndexPan from "@/views/components/IndexPan.vue";
 export default {
   data(){
     return {
@@ -57,6 +57,7 @@ export default {
 
   },
   components:{
+    IndexPan,
     UpTopTable,
     TradeDetailChart,
     StockDetailPop,

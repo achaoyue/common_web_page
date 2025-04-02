@@ -121,11 +121,11 @@ export default {
 @import '~@/assets/styles/varibles.styl';
 @import '~@/assets/styles/mixins.styl';
 .perfect_img{
-  display :inline-block
-  max-width 300px
-  min-width 300px
-  border solid 1px black
-  position relative
+  display :inline-block;
+  max-width: 400px;
+  min-width: 400px;
+  border: solid 1px black;
+  position: relative;
 }
 .perfect_img img{
 

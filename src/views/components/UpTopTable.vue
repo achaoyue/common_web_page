@@ -17,12 +17,19 @@
       </el-date-picker>
       <el-button @click="queryList">查询</el-button>
     </div>
+<!--    <div>-->
+<!--        <div class="item_row" v-for="(value,key) in this.data" :key="key">-->
+<!--          <div class="item_col" style="width: 100px">{{key}}</div>-->
+<!--          <div class="item_col" :style="{backgroundColor:value.indexOf(day)>=0?'#f11ef1':'#aabbcc'}" v-for="day of days" :key="key+'-'+day"></div>-->
+<!--        </div>-->
+<!--    </div>-->
     <div>
-        <div class="item_row" v-for="(value,key) in this.data" :key="key">
-          <div class="item_col" style="width: 100px">{{key}}</div>
-          <div class="item_col" :style="{backgroundColor:value.indexOf(day)>=0?'#f11ef1':'#aabbcc'}" v-for="day of days" :key="key+'-'+day"></div>
-        </div>
+      <div class="item_row" v-for="item of resultStockUpDay" :key="item.k">
+        <div class="item_col" style="width: 100px">{{item.k}}</div>
+        <div class="item_col" :style="{backgroundColor:day=='1'?'#f11ef1':'#aabbcc'}" v-for="(day,idx) in item.v" :key="idx"></div>
+      </div>
     </div>
+
   </div>
 </template>
 
@@ -34,10 +41,11 @@ export default {
   name: "UpTopTable",
   data:function (){
     return {
+      resultStockUpDay:{},
       days:[],
       data:{},
       param:{
-        startDate:moment().subtract(90,'days').format("YYYY-MM-DD"),
+        startDate:moment().subtract(30,'days').format("YYYY-MM-DD"),
         endDate:moment().format("YYYY-MM-DD")
       }
     }
@@ -51,17 +59,54 @@ export default {
       upTopList(this.param).then(resp=>{
         let data = resp.data;
         let daysmap = {};
-        let map = {};
         for (let item of data) {
           daysmap[item.value] = 1;
-          let m =  map[item.key];
-          if (!m) {
-            m =  map[item.key] = [];
-          }
-          m.push(item.value)
         }
-        this.days = Object.keys(daysmap).sort();
-        this.data = map;
+
+
+        //股票涨停日期map
+        let stockUpMap = {};
+        for (let item of data) {
+          if (stockUpMap[item.key]==null){
+            stockUpMap[item.key] = [];
+          }
+          stockUpMap[item.key].push(item.value);
+        }
+
+        //股票每日是否涨停
+        let stockUpDayMap = {};
+        let i = this.param.endDate;
+        for(;i>=this.param.startDate;i = moment(i).subtract(1,'days').format("YYYY-MM-DD")){
+
+          if (!daysmap[i]){
+            continue;
+          }
+          for (let key in stockUpMap){
+            if (stockUpDayMap[key] == null){
+              stockUpDayMap[key] = "";
+            }
+            if (stockUpMap[key].indexOf(i)<0){
+              stockUpDayMap[key]+="0";
+            }else {
+              stockUpDayMap[key]+="1";
+            }
+          }
+        }
+
+        //股票涨停排序
+        let stockNames = Object.keys(stockUpDayMap).sort((key1,key2)=>{
+          return stockUpDayMap[key2].localeCompare(stockUpDayMap[key1]);
+        })
+
+        let resultStockUpDay = stockNames.map(e=>{
+          return {
+            k:e,
+            v:stockUpDayMap[e].split('')
+          }
+        })
+
+        this.resultStockUpDay = resultStockUpDay;
+        console.log(this.resultStockUpDay)
       })
     }
   }

@@ -1,7 +1,7 @@
 <template>
   <span>
-    <a v-if="!$slots.default" target="_blank" :href="'http://quote.eastmoney.com/concept/'+getStockNum2()+'.html#'">财富网</a>
-    <a v-if="$slots.default" target="_blank" :href="'http://quote.eastmoney.com/concept/'+getStockNum2()+'.html#'">
+    <a v-if="!$slots.default" target="_blank" :href="getStockNum2()">财富网</a>
+    <a v-if="$slots.default" target="_blank" :href="getStockNum2()">
       <slot></slot>
     </a>
   </span>
@@ -15,10 +15,12 @@ export default {
   },
   methods:{
     getStockNum2() {
-      if (this.stockNum.startsWith("6")) {
-        return "sh" + this.stockNum;
+      if (this.stockNum.startsWith("BK")){
+        return 'https://quote.eastmoney.com/bk/90.'+this.stockNum+'.html'
+      } else if (this.stockNum.startsWith("6")) {
+        return  'http://quote.eastmoney.com/concept/'+"sh" + this.stockNum+'.html#';
       } else {
-        return "sz" + this.stockNum;
+        return  'http://quote.eastmoney.com/concept/'+"sz" + this.stockNum+'.html#';
       }
     },
   }

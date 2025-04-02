@@ -25,6 +25,7 @@ export const monitorList = p => get("stock/monitor/list", p)
 export const tradeDetail = p => get("stock/trade/detail", p)
 export const upTopList = p => get("stock/upTop/list", p)
 export const getDayPeriodList = p => get("stock/getDayPeriodList", p)
+export const queryIndex = p => get("stock/queryIndex", p)
 
 
 

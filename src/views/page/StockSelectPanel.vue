@@ -55,6 +55,7 @@
           最大:<div style="display: inline-block;width: 100px"><el-input type="number" v-model="param.maxRange"/></div>
         </div>
         <el-button @click="cc">查询</el-button>
+        <el-checkbox v-model="distinctIndustry">分板块</el-checkbox>
         <el-input
             v-if="selectId == 'STOCK_NUM'"
             type="textarea"
@@ -96,22 +97,45 @@
       <div v-if="!done">
         请求中。。。。
       </div>
-      <div
-          class="perfect_img"
-          v-for="(item, index) in stockList"
-          :key="index"
-      >
-        <div>{{index}},{{item.stockName}},{{item.stockNum}},{{item.industry}},{{formatMarket(item)}}</div>
-        <StockImg
-            :stock-num="item.stockNum"
-            :right-x="rightX"
-            :ppx="ppx"
-            :all-type="allType"
-            :default-start="startDate"
-            :default-end="endDate"
-            :mouse-move-notice="mouseChange"></StockImg>
-        <div>{{item.belongPlate}}</div>
+      <div v-if="distinctIndustry">
+        <div class="industry_row" v-for="(rows,industry) in stockIndustryMap" :key="industry">
+          <el-divider>{{industry}}</el-divider>
+          <div
+              class="perfect_img"
+              v-for="(item, index) in rows"
+              :key="index"
+          >
+            <div>{{index}},{{item.stockName}},{{item.stockNum}},{{item.industry}},{{formatMarket(item)}}</div>
+            <StockImg
+                :stock-num="item.stockNum"
+                :right-x="rightX"
+                :ppx="ppx"
+                :all-type="allType"
+                :default-start="startDate"
+                :default-end="endDate"
+                :mouse-move-notice="mouseChange"></StockImg>
 
+          </div>
+        </div>
+      </div>
+      <div v-if="!distinctIndustry">
+        <div
+            class="perfect_img"
+            v-for="(item, index) in stockList"
+            :key="index"
+        >
+          <div>{{index}},{{item.stockName}},{{item.stockNum}},{{item.industry}},{{formatMarket(item)}}</div>
+          <StockImg
+              :stock-num="item.stockNum"
+              :right-x="rightX"
+              :ppx="ppx"
+              :all-type="allType"
+              :default-start="startDate"
+              :default-end="endDate"
+              :mouse-move-notice="mouseChange"></StockImg>
+          <div>{{item.belongPlate}}</div>
+
+        </div>
       </div>
     </div>
 
@@ -138,6 +162,7 @@ export default {
   },
   data() {
     return {
+      distinctIndustry:false,
       done:true,
       param:{},
       industry:null,
@@ -145,8 +170,9 @@ export default {
       rightX:3,
       allType:null,
       num:0,
-      stockListStr:globalFunction.getCookies("stockNumsText"),
+      stockListStr:globalFunction.getCookies("stockNumsText") || '',
       stockList:[],
+      stockIndustryMap:{},
       type:"CCI",
       date:moment().format("YYYY-MM-DD"),
       startDate:moment().subtract(90,'days').format("YYYY-MM-DD"),
@@ -169,11 +195,11 @@ export default {
     },
     cc(){
       this.stockListChange();
-      if (this.stockListStr != null){
+      if (this.stockListStr != null && this.selectId=='STOCK_NUM'){
         globalFunction.setCookies("stockNumsText",this.stockListStr);
       }
       bigThan({date:moment(this.date).format("YYYY-MM-DD")}).then((resp)=>{
-        this.rightX = 3+ parseInt(resp.data) * 4.23;
+        this.rightX = (5+ parseInt(resp.data) * 4.23)*400/300;
       });
       let param = {
         stockNum: "601398",
@@ -195,6 +221,14 @@ export default {
         this.stockList = [];
         stockSelect(p).then(resp=>{
           this.stockList = resp.data
+          let map = {};
+          for(let item of resp.data){
+            if (map[item.industry] == null){
+              map[item.industry] = []
+            }
+            map[item.industry].push(item);
+          }
+          this.stockIndustryMap = map;
           console.log(JSON.stringify(resp.data.map(e=>e.stockNum)))
           this.$notify({
             title: '成功',
@@ -272,8 +306,8 @@ export default {
 }
 .perfect_img{
   display :inline-block
-  max-width 300px
-  min-width 300px
+  max-width 400px
+  min-width 400px
   border solid 1px black
   position relative
   vertical-align top
@@ -286,7 +320,8 @@ export default {
   word-break break-all
 }
 .idx_op{
-  background-color white
+  background-color white;
+  white-space break-spaces;
 }
 .idx_op span{
   background-color #f3d6d6
@@ -298,4 +333,9 @@ export default {
     display: inline-block
     width :300px;
   }
+.industry_row{
+  overflow auto;
+  white-space nowrap;
+  text-align left;
+}
 </style>

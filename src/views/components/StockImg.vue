@@ -13,7 +13,7 @@
         <span @click="changeImg('TIME')">time</span>
         <span @click="changeImg('FIVE')">five</span>
         <span @click="changeImg('NEW')">NEW</span>
-        <span><a target="_blank" :href="'http://quote.eastmoney.com/concept/'+getStockNum2()+'.html#'">详情</a></span>
+        <DetailLink :stock-num="stockNum">详情</DetailLink>
         <FavoriteSpan :stock-num="stockNum" :is-favorite="opFavorite" :change="(op)=>{this.opFavorite = op}"/>
         <StockDetailPop
             :key="stockNum+'_detail_pop'"
@@ -53,10 +53,11 @@ import StockDetailPop from "@/views/components/StockDetailPop";
 import moment from "moment";
 import StockKLine from "@/views/components/StockKLine";
 import globalFunction from "@/globalFunction";
+import DetailLink from "@/views/components/DetailLink";
 
 export default {
   name: "StockImg",
-  components: {StockKLine, StockDetailPop, FavoriteSpan},
+  components: {DetailLink, StockKLine, StockDetailPop, FavoriteSpan},
   props: {
     stockNum: String,
     rightX: Number,
@@ -115,7 +116,9 @@ export default {
     },
 
     getStockNum() {
-      if (this.stockNum.startsWith("6")) {
+      if (this.stockNum.startsWith("BK")){
+        return "90." + this.stockNum;
+      }else if (this.stockNum.startsWith("6")) {
         return "1." + this.stockNum;
       } else if (this.stockNum.startsWith("3")) {
         return "0." + this.stockNum;
@@ -170,6 +173,7 @@ export default {
   padding: 10px 0 0 10px;
   word-wrap: normal;
   word-break: keep-all;
+  white-space: normal;
 }
 
 .idx_op span {

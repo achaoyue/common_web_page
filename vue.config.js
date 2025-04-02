@@ -13,6 +13,7 @@ module.exports = {
       '/api': {
         // target: 'http://192.168.3.47:8080/api', //后台接口
         target: 'http://localhost:8080/api', //后台接口
+        // target: 'http://mwy.nat300.top/api',
         ws: true, //是否跨域
         changeOrigin: true,
         pathRewrite: {

@@ -194,8 +194,8 @@ export default {
 }
 .perfect_img{
   display :inline-block
-  max-width 300px
-  min-width 300px
+  max-width 400px
+  min-width 400px
   border solid 1px black
   position relative
 }

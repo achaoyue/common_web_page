@@ -25,12 +25,11 @@ export default {
       randomId:Math.round(Math.random()*10000000),
       options:{
         tooltip: {
-          trigger: 'axis',
+          trigger: 'item',
           axisPointer: {
             type: 'cross',
             label: {
               backgroundColor: '#ff5a1e',
-              show: false
             }
           }
         },
@@ -39,6 +38,7 @@ export default {
           data: []
         },
         yAxis: {
+          scale: true,
           type: 'value'
         },
         dataZoom:[

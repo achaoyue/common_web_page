@@ -54,7 +54,8 @@ import {
   Alert,
   Loading,
   Pagination,
-  Progress
+  Progress,
+    Checkbox
 } from "element-ui";
 const element = {
   install: function (Vue) {
@@ -109,6 +110,7 @@ const element = {
     Vue.use(Alert);
     Vue.use(Pagination);
     Vue.use(Progress);
+    Vue.use(Checkbox)
     Vue.use(Loading.directive);
 
     Vue.prototype.$loading = Loading.service;
