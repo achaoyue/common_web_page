@@ -37,8 +37,25 @@ export default {
           axisPointer: {
             type: 'cross',
             label: {
-              backgroundColor: '#ff5a1e',
-              show:false
+              // 重点配置：确保标签显示在Y轴上
+              show: true,
+              precision: 2, // 小数位数
+              formatter: function(params) {
+                if (!params || !params.value){
+                  return 0;
+                }
+                if (params.axisDimension === 'y'){
+                  return params.value.toFixed(2)
+                }
+                // 只显示Y轴值
+                return params.value
+              },
+              // 让标签跟随Y轴
+              margin: 3,
+              backgroundColor: '#333',
+              color: '#fff',
+              // 只显示Y轴的标签
+              showContent: false
             }
           },
           formatter: (params) => {

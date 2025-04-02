@@ -1,8 +1,22 @@
 <!-- 收藏组件 -->
 <template>
   <div class="favoriteBtn">
-    <div v-if="isFavorite=='Y'" @click="editFavorite">取消收藏</div>
-    <div v-else @click="editFavorite">收藏</div>
+    <el-button type="text" v-if="isFavorite=='Y'" @click="editFavorite">取消收藏</el-button>
+    <el-button type="text" v-else @click="showDialog">收藏</el-button>
+    <el-dialog
+        style="text-align: left"
+        width="30%"
+        title="通知价格设置"
+        :append-to-body="true"
+        :visible.sync="show"
+    >
+      <div>最小价格:<el-input v-model="minPrice"></el-input></div>
+      <div>最大价格:<el-input v-model="maxPrice"></el-input></div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="show = false">取 消</el-button>
+        <el-button type="primary" @click="editFavorite">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -16,11 +30,23 @@ export default {
     stockNum: String,
     change:Function
   },
+  data:function (){
+    return {
+      show:false,
+      minPrice:0,
+      maxPrice:0
+    }
+  },
   methods:{
+    showDialog(){
+      this.show = true;
+    },
     editFavorite(){
       let param = {
         stockNum:this.stockNum,
-        opType:this.isFavorite == 'Y' ? "DELETE" : "ADD"
+        opType:this.isFavorite == 'Y' ? "DELETE" : "ADD",
+        minPrice:this.minPrice,
+        maxPrice:this.maxPrice
       }
       editFavorite(param).then(()=>{
         // this.isFavorite = param.opType == "ADD" ? "Y" : "N";
@@ -34,6 +60,7 @@ export default {
 <style scoped>
 .favoriteBtn{
   display: inline-block;
+  margin-left: 5px;
 }
 .favoriteBtn div{
   display: inline-block;
