@@ -46,7 +46,7 @@
       <div style="width: 50%;display: inline-block;text-align: left;vertical-align: top">
         <div>stockNum:
           <DetailLink v-if="stockDetail" :stock-num="stockDetail.stockDO.stockNum">{{ !stockDetail ? null : stockDetail.stockDO.stockNum }}</DetailLink>
-          <FavoriteSpan v-if="stockDetail" :stock-num="stockDetail.stockDO.stockNum" :is-favorite="stockDetail.stockDO.isFavorite"/>
+          <FavoriteSpan v-if="stockDetail" :stock-num="stockDetail.stockDO.stockNum" :is-favorite="stockDetail.stockDO.favorite" :change="(op)=>{stockDetail.stockDO.favorite = op}"/>
         </div>
         <div>日期:{{ !stockDetail ? null : stockDetail.stockDayInfoDOS[stockDetail.stockDayInfoDOS.length-1].date }}</div>
         <div>stockName:{{ !stockDetail ? null : stockDetail.stockDO.stockName }}</div>
@@ -62,6 +62,7 @@
         <div>MACD:{{ macdInfo() }}</div>
         <div>资金流:{{ stockFundInfo() }}, 占比: {{stockFundPer()}}</div>
         <div>异动情况:{{ !stockDetail ? null : stockDetail.abnormal }}</div>
+        <div>计划价格:{{formatFavorite()}}</div>
         <div>行业上涨情况:{{ (!stockDetail || !stockDetail.industryUpDown) ? null : stockDetail.industryUpDown.topSize }}/{{ (!stockDetail || !stockDetail.industryUpDown) ? null : stockDetail.industryUpDown.upSize }}/{{ (!stockDetail || !stockDetail.industryUpDown) ? null : stockDetail.industryUpDown.allSize }}</div>
         <div v-if="this.stockDetail && this.stockDetail.distribution" style="height: 200px">
           <BarChart :stock-num="stockNum" :data="{value:this.stockDetail.distribution}" />
@@ -238,7 +239,17 @@ export default {
         return "";
       }
       return Math.round(this.stockDetail.stockDayInfoDOS[this.stockDetail.stockDayInfoDOS.length-1].preClose*1.1*100)/100
-    }
+    },
+    formatFavorite(){
+      if (!this.stockDetail || !this.stockDetail.stockDO) {
+        return "";
+      }
+      let attr =  JSON.parse(this.stockDetail.stockDO.attribute);
+      if (attr == null){
+        return "";
+      }
+      return ""+"("+attr.minPrice+"-"+attr.maxPrice+")";
+    },
   }
 }
 </script>

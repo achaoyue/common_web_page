@@ -24,7 +24,8 @@ export default {
             type: 'cross',
             label: {
               backgroundColor: '#ff5a1e',
-              show: false
+              show: true,
+              formatter: '{value}',
             }
           }
         },

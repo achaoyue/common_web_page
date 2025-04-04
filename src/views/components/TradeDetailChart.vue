@@ -39,7 +39,10 @@ export default {
             type: 'cross',
             label: {
               backgroundColor: '#ff5a1e',
-              show: false
+              show: true,
+              precision: 2,
+              formatter: '{value}',
+              showContent: false
             }
           }
         },

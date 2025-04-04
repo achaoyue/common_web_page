@@ -20,6 +20,7 @@
           <el-option value="UP_DOWN_SELECT" label="k线幅度选择"></el-option>
           <el-option value="STOCK_NUM" label="股票编码"></el-option>
           <el-option value="UP_RANGE" label="涨幅"></el-option>
+          <el-option value="FAVORITE" label="已收藏"></el-option>
 
         </el-select>
         <div class="time_block">
@@ -53,6 +54,13 @@
           天数:<div style="display: inline-block;width: 100px"><el-input type="number" v-model="param.daySize"/></div>
           最小:<div style="display: inline-block;width: 100px"><el-input type="number" v-model="param.minRange"/></div>
           最大:<div style="display: inline-block;width: 100px"><el-input type="number" v-model="param.maxRange"/></div>
+        </div>
+        <div class="time_block" style="width: 500px" v-if="selectId == 'FAVORITE'">
+          在区间:<el-switch
+            v-model="param.inPeriod"
+            active-color="#13ce66"
+            inactive-color="#ff4949">
+        </el-switch>
         </div>
         <el-button @click="cc">查询</el-button>
         <el-checkbox v-model="distinctIndustry">分板块</el-checkbox>
@@ -105,7 +113,8 @@
               v-for="(item, index) in rows"
               :key="index"
           >
-            <div>{{index}},{{item.stockName}},{{item.stockNum}},{{item.industry}},{{formatMarket(item)}}</div>
+            <div>{{index}},{{item.stockName}},{{item.stockNum}},{{item.industry}},{{item.close}},{{formatMarket(item)}}</div>
+            <div style="background-color: #ff5e0e" v-if="item.favorite === 'Y'">{{item.attribute}}</div>
             <StockImg
                 :stock-num="item.stockNum"
                 :right-x="rightX"
@@ -124,7 +133,8 @@
             v-for="(item, index) in stockList"
             :key="index"
         >
-          <div>{{index}},{{item.stockName}},{{item.stockNum}},{{item.industry}},{{formatMarket(item)}}</div>
+          <div>{{index}},{{item.stockName}},{{item.stockNum}},{{item.industry}},{{item.close}},{{formatMarket(item)}}</div>
+          <div style="background-color: #ff5e0e" v-if="item.favorite === 'Y'">{{formatFavorite(item)}}</div>
           <StockImg
               :stock-num="item.stockNum"
               :right-x="rightX"
@@ -132,6 +142,7 @@
               :all-type="allType"
               :default-start="startDate"
               :default-end="endDate"
+              :favorite = item.favorite
               :mouse-move-notice="mouseChange"></StockImg>
           <div>{{item.belongPlate}}</div>
 
@@ -164,7 +175,7 @@ export default {
     return {
       distinctIndustry:false,
       done:true,
-      param:{},
+      param:{inPeriod:true},
       industry:null,
       ppx:0,
       rightX:3,
@@ -189,6 +200,11 @@ export default {
   methods: {
     mouthMove(event){
       this.ppx = event.offsetX
+    },
+    formatFavorite(item){
+      let attr =  JSON.parse(item.attribute);
+      let date = moment(attr.addFavoriteDate).format("yyyy-MM-DD")
+      return "计划价格:"+date+"("+attr.minPrice+"-"+attr.maxPrice+")";
     },
     formatMarket(item){
       return  globalFunction.formatNum(item.flowMarketValue,0)

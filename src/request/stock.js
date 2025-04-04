@@ -26,6 +26,8 @@ export const tradeDetail = p => get("stock/trade/detail", p)
 export const upTopList = p => get("stock/upTop/list", p)
 export const getDayPeriodList = p => get("stock/getDayPeriodList", p)
 export const queryIndex = p => get("stock/queryIndex", p)
+export const addNote = p => post("/stock/note/add", p)
+export const queryNote = p => get("/stock/note/query", p)
 
 
 

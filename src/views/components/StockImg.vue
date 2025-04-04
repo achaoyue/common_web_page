@@ -20,6 +20,7 @@
             :stock-num="stockNum"
             :default-start-date="defaultStart || start"
             :default-end-date="defaultEnd || end" />
+        <span @click="()=>{this.noteShow=true}">笔记</span>
       </div>
     </div>
     <div v-if="type == 'NEW'">
@@ -42,8 +43,10 @@
             :stock-num="stockNum"
             :default-start-date="defaultStart || start"
             :default-end-date="defaultEnd || end" />
+        <span @click="()=>{this.noteShow=true}">笔记</span>
       </div>
     </div>
+    <StockNote v-if="noteShow" :stock-num="stockNum" :show.sync="noteShow"/>
   </div>
 </template>
 
@@ -54,10 +57,11 @@ import moment from "moment";
 import StockKLine from "@/views/components/StockKLine";
 import globalFunction from "@/globalFunction";
 import DetailLink from "@/views/components/DetailLink";
+import StockNote from "@/views/components/StockNote.vue";
 
 export default {
   name: "StockImg",
-  components: {DetailLink, StockKLine, StockDetailPop, FavoriteSpan},
+  components: {StockNote, DetailLink, StockKLine, StockDetailPop, FavoriteSpan},
   props: {
     stockNum: String,
     rightX: Number,
@@ -70,6 +74,7 @@ export default {
   },
   data() {
     return {
+      noteShow:false,
       opPpx: 0,
       type: 'MACD',
       opFavorite: null,
