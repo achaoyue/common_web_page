@@ -47,6 +47,8 @@
         <div>stockNum:
           <DetailLink v-if="stockDetail" :stock-num="stockDetail.stockDO.stockNum">{{ !stockDetail ? null : stockDetail.stockDO.stockNum }}</DetailLink>
           <FavoriteSpan v-if="stockDetail" :stock-num="stockDetail.stockDO.stockNum" :is-favorite="stockDetail.stockDO.favorite" :change="(op)=>{stockDetail.stockDO.favorite = op}"/>
+          <el-button type="text" @click="()=>{noteShow = true}">笔记</el-button>
+          <StockNote v-if="noteShow" :to-body="true" :stock-num="stockDetail.stockDO.stockNum" :show.sync="noteShow"/>
         </div>
         <div>日期:{{ !stockDetail ? null : stockDetail.stockDayInfoDOS[stockDetail.stockDayInfoDOS.length-1].date }}</div>
         <div>stockName:{{ !stockDetail ? null : stockDetail.stockDO.stockName }}</div>
@@ -90,16 +92,17 @@ import moment from "moment";
 import StockKLine from "@/views/components/StockKLine";
 import DetailLink from "@/views/components/DetailLink";
 import FavoriteSpan from "@/views/components/FavoriteSpan";
-import globalFunction from "@/globalFunction";
 import BarChart from "@/views/components/BarChart";
 import LineChart from "@/views/components/LineChart";
 import TradeDetailChart from "@/views/components/TradeDetailChart";
+import StockNote from "@/views/components/StockNote.vue";
 
 export default {
   name: "StockDetailPop",
-  components: {TradeDetailChart, LineChart, BarChart, FavoriteSpan, DetailLink, StockKLine},
+  components: {StockNote, TradeDetailChart, LineChart, BarChart, FavoriteSpan, DetailLink, StockKLine},
   data() {
     return {
+      noteShow:false,
       uniqueKey:null,
       show: false,
       stockDetail: null,

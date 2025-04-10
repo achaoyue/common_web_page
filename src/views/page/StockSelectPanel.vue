@@ -21,6 +21,7 @@
           <el-option value="STOCK_NUM" label="股票编码"></el-option>
           <el-option value="UP_RANGE" label="涨幅"></el-option>
           <el-option value="FAVORITE" label="已收藏"></el-option>
+          <el-option value="STOCK_NOTE" label="笔记"></el-option>
 
         </el-select>
         <div class="time_block">
@@ -31,6 +32,9 @@
               format="yyyy-MM-dd"
               placeholder="选择日期">
           </el-date-picker>
+        </div>
+        <div class="time_block" >
+          最小换手率:<div style="display: inline-block;width: 100px"><el-input type="number" v-model="param.turnOverRate"/></div>
         </div>
         <div class="time_block" v-if="selectId == 'UP_TOP'">
           连涨天数:<div style="display: inline-block;width: 100px"><el-input type="number" v-model="param.daySize"/></div>
@@ -44,10 +48,17 @@
           股票名称:<div style="display: inline-block"><el-input v-model="param.name"/></div>
         </div>
         <div class="time_block" v-if="selectId == 'NEW_TOP'">
-          序列:<div style="display: inline-block;width: 300px"><el-input type="text" v-model="param.series"/></div>
+          序列:<div style="display: inline-block;width: 250px;display: inline-block"><el-input type="text" v-model="param.series"/></div>
+        </div>
+        <div class="time_block" v-if="selectId == 'NEW_TOP'">
+          刚突破:<el-switch
+            v-model="param.justBigThan"
+            active-color="#13ce66"
+            inactive-color="#ff4949">
+            </el-switch>
         </div>
         <div class="time_block" v-if="selectId == 'UP_DOWN_SELECT'">
-          序列:<div style="display: inline-block;width: 300px"><el-input type="text" v-model="param.series"/></div>
+          序列:<div style="display: inline-block;width: 250px"><el-input type="text" v-model="param.series"/></div>
         </div>
         <IndustrySelector v-if="selectId == 'INDUSTRY'" :multiple='false' :change="(val)=>{param.industry = val}"/>
         <div class="time_block" style="width: 500px" v-if="selectId == 'UP_RANGE'">
@@ -102,19 +113,19 @@
           </el-date-picker>
         </div>
       </div>
-      <div v-if="!done">
+      <div v-if="!done" style="text-align: center">
         请求中。。。。
       </div>
       <div v-if="distinctIndustry">
         <div class="industry_row" v-for="(rows,industry) in stockIndustryMap" :key="industry">
-          <el-divider>{{industry}}</el-divider>
+          <el-divider>{{industry}}({{rows.length}})</el-divider>
           <div
               class="perfect_img"
               v-for="(item, index) in rows"
               :key="index"
           >
             <div>{{index}},{{item.stockName}},{{item.stockNum}},{{item.industry}},{{item.close}},{{formatMarket(item)}}</div>
-            <div style="background-color: #ff5e0e" v-if="item.favorite === 'Y'">{{item.attribute}}</div>
+            <div style="background-color: #ff5e0e" v-if="item.favorite === 'Y'">{{formatFavorite(item)}}</div>
             <StockImg
                 :stock-num="item.stockNum"
                 :right-x="rightX"
@@ -156,10 +167,8 @@
 <script>
 
 import {bigThan,stockSelect,queryDayLine} from "@/request/stock";
-import FavoriteSpan from "@/views/components/FavoriteSpan";
 import moment from "moment";
 import StockImg from "@/views/components/StockImg";
-import StockKLine from "@/views/components/StockKLine";
 import IndustrySelector from "@/views/components/IndustrySelector";
 import globalFunction from "@/globalFunction";
 
@@ -167,15 +176,13 @@ export default {
   name: 'StockViewPanel',
   components:{
     IndustrySelector,
-    StockKLine,
     StockImg,
-    FavoriteSpan
   },
   data() {
     return {
       distinctIndustry:false,
       done:true,
-      param:{inPeriod:true},
+      param:{inPeriod:true,justBigThan:false},
       industry:null,
       ppx:0,
       rightX:3,
@@ -257,30 +264,6 @@ export default {
       })
 
     },
-    getStockNum(stockNum){
-      if (stockNum.startsWith("6")){
-        return "1."+stockNum;
-      }else if (stockNum.startsWith("3")){
-        return "0."+stockNum;
-      }else if (stockNum.startsWith("0")){
-        return "0."+stockNum;
-      }else {
-        return "0."+stockNum;
-      }
-    },
-    getStockNum2(stockNum){
-      if (stockNum.startsWith("6")){
-        return "sh"+stockNum;
-      }else {
-        return "sz"+stockNum;
-      }
-    },
-    changeImg(stock, type){
-      this.type = type;
-    },
-    favoriteChange(op){
-      alert("收藏OK")
-    },
     mouseChange(x){
       this.ppx = x;
     },
@@ -317,7 +300,6 @@ export default {
 .perfect_list{
   background-color:#f9ebe8e6
   display: block
-  text-align: center
   padding-bottom : 10px
 }
 .perfect_img{
@@ -326,7 +308,8 @@ export default {
   min-width 400px
   border solid 1px black
   position relative
-  vertical-align top
+  vertical-align top;
+  text-align: center;
 }
 .perfect_img img{
 
@@ -350,8 +333,11 @@ export default {
     width :300px;
   }
 .industry_row{
-  overflow auto;
-  white-space nowrap;
-  text-align left;
+  overflow: auto;
+  white-space: nowrap;
+}
+.industry_row > .perfect_img{
+  white-space: nowrap;
+  display: inline-block;
 }
 </style>

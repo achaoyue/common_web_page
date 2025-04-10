@@ -19,6 +19,15 @@ module.exports = {
           '^/api/stock/editFavorite': '/'
         }
       },
+      'api/stock/note/add': {
+        target: 'http://192.168.3.47:8080/api/stock/note/add', //后台接口
+        // target: 'http://localhost:8080/api', //后台接口
+        ws: true, //是否跨域
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api/stock/note/add': '/'
+        }
+      },
       '/api': {
         // target: 'http://192.168.3.47:8080/api', //后台接口
         target: 'http://localhost:8080/api', //后台接口
