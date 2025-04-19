@@ -13,7 +13,7 @@
             v-model="textContent">
         </el-input>
       </div>
-      <div style="height: 500px;width: 100%">
+      <div style="height: 600px;width: 100%">
         <LineChart :data="this.data"/>
       </div>
     </div>
@@ -55,10 +55,12 @@ export default {
       let lines = this.textContent.split("\n");
       let x = lines.map(e => e.split(/[ ,\n\r]/g)[0])
       let y = [];
-      for (let i = 1;i< lines.length;i++){
+      let length = lines[0].split(/[ ,\n\r]/g).length;
+      for (let i = 1;i< length;i++){
         y.push(lines.map(e => e.split(/[ ,\n\r]/g)[i]))
       }
       this.data = {x: x, y: y}
+      console.log(this.data)
     }
   }
 }

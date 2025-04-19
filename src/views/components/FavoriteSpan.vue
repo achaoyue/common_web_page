@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import {editFavorite} from "@/request/stock";
+import {editFavorite, getStock} from "@/request/stock";
 
 export default {
   name: "FavoriteSpan",
@@ -34,12 +34,22 @@ export default {
     return {
       show:false,
       minPrice:0,
-      maxPrice:0
+      maxPrice:0,
+      stockData:null,
     }
   },
   methods:{
     showDialog(){
       this.show = true;
+      this.queryStock();
+    },
+    queryStock(){
+      getStock({stockNum:this.stockNum}).then(resp=>{
+        this.stockData = resp.data;
+        let attr = JSON.parse(resp.data.attribute);
+        this.minPrice = attr.minPrice;
+        this.maxPrice = attr.maxPrice;
+      })
     },
     editFavorite(){
       let param = {

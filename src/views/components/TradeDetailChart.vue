@@ -8,6 +8,7 @@
       <el-radio v-model="priceType" label="price">价格</el-radio>
       <el-radio v-model="priceType" label="vol">成交量</el-radio>
       <el-radio v-model="priceType" label="sum_vol">成交总和</el-radio>
+      <el-radio v-model="priceType" label="power">动能</el-radio>
     </div>
     <div :id="'stock-trade-bar'+this.stockNum+(this.fixId || '')" style="width: 100%;height: 100%"></div>
   </div>
@@ -226,6 +227,37 @@ export default {
           let priceKeys = Object.keys(priceVolMap).sort();
           this.options.xAxis.data = priceKeys;
           this.options.series[0].data = priceKeys.map(e=>priceVolMap[e])
+          this.kChart.clear();
+          this.kChart.setOption(this.options,false);
+        } else if (this.priceType == "power") {
+          let xAxis = data.map(e=>e[0]);
+          this.options.xAxis.data = xAxis;
+          let sum = 0;
+          let currentTag = '0';
+          this.options.series[0].data = data.map(e => {
+            if (currentTag != e[4]){
+              sum = 0;
+              currentTag = e[4];
+            }
+            sum += parseInt(e[2])
+            return {
+              value: sum,
+              itemStyle: {
+                color: e[4] == '2' ? "#a90000" : "#11f53f"
+              }
+            }
+          })
+          this.options.series[1].data = data.map(e=>{return {
+            value:e[1]
+          }})
+          this.options.series[2].markLine.data[0].yAxis=this.preClose;
+
+          if (this.kChart.getOption() != null){
+            this.options.dataZoom = this.kChart.getOption().dataZoom;
+          }
+          this.options.yAxis[1].min = this.preClose*0.89;
+          this.options.yAxis[1].max = this.preClose*1.11;
+
           this.kChart.clear();
           this.kChart.setOption(this.options,false);
         }

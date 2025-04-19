@@ -30,6 +30,9 @@ import {queryIndex} from "@/request/stock";
 import moment from "moment/moment";
 import LineChart from "@/views/components/LineChart.vue";
 
+/**
+ * 指数大盘
+ */
 
 export default {
   components: {LineChart},

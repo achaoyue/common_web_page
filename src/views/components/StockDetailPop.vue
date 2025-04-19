@@ -27,6 +27,7 @@
       </div>
       <div style="width: 50%;display: inline-block">
         <StockKLine fix-id="detailPop" :ref="stockNum" :stock-num="stockNum" :start-date="startDate || defaultStartDate" :end-date="endDate || defaultEndDate"/>
+        <FundPan v-if="show" :stock-num="stockNum" :start-date="this.startDate" :end-date="this.endDate"/>
         <div style="height: 500px">
           <TradeDetailChart
               :stock-num="stockNum"
@@ -96,10 +97,11 @@ import BarChart from "@/views/components/BarChart";
 import LineChart from "@/views/components/LineChart";
 import TradeDetailChart from "@/views/components/TradeDetailChart";
 import StockNote from "@/views/components/StockNote.vue";
+import FundPan from "@/views/components/FundPan.vue";
 
 export default {
   name: "StockDetailPop",
-  components: {StockNote, TradeDetailChart, LineChart, BarChart, FavoriteSpan, DetailLink, StockKLine},
+  components: {FundPan, StockNote, TradeDetailChart, LineChart, BarChart, FavoriteSpan, DetailLink, StockKLine},
   data() {
     return {
       noteShow:false,

@@ -10,6 +10,8 @@ import globalFunction from "@/globalFunction";
 /*{
   x:[]
   y:[[]]
+  legend:[],
+  color:[]
 }*/
 
 export default {
@@ -24,6 +26,11 @@ export default {
       kChart:null,
       randomId:Math.round(Math.random()*10000000),
       options:{
+        color:["#E6194B","#3CB44B","#4363D8","#FFE119","#F58231","#911EB4","#42D4F4","#F032E6","#BFEF45","#000075"],
+        grid: {
+          bottom: '100px',
+          containLabel: true
+        },
         tooltip: {
           trigger: 'item',
           axisPointer: {
@@ -50,6 +57,15 @@ export default {
             yAxisIndex: [0],
           }
         ],
+        legend: {
+          selector:true,
+          itemWidth: 6,
+          itemHeight: 6,
+          width:'80%',
+          bottom:40,
+          xorient:'vertical',
+          data: ['a','b']
+        },
         series: [
           {
             data: [],
@@ -83,12 +99,24 @@ export default {
         this.kChart.clear();
         return;
       }
+      if (this.data.color!=null){
+        this.color = this.data.color;
+      }
       this.options.xAxis.data = this.data.x;
+      if (this.data.legend != undefined){
+        this.options.legend.data = this.data.legend;
+      }else{
+        let i = 0;
+        this.options.legend.data = this.data.y.map(e=>{return ""+i++} );
+      }
+
+      let i = 0;
       this.options.series = this.data.y.map(e=>{
         return {
           data: e,
           type: 'line',
-          animation:false
+          animation:false,
+          name: this.data.legend ? this.data.legend[i++] : ""+i++
         }
       })
       this.kChart.clear();
