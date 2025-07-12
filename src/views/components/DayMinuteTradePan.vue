@@ -16,19 +16,19 @@
           placeholder="选择结束日期">
       </el-date-picker>
       <el-button type="mini" @click="queryFund">刷新</el-button>
-      <el-button type="mini" @click="crow">crow</el-button>
+      <el-button type="mini" @click="crowTime">crow</el-button>
     </div>
     <div style="height: 400px">
-      <LineChart :fix-id="'fund_span'" :stockNum="this.stockNum" :data="this.data"/>
+      <LineChart :fix-id="'DayMinuteTradePan'" :stockNum="this.stockNum" :data="this.data"/>
     </div>
   </div>
 </template>
 <script>
-import {queryFund, testFund} from "@/request/stock";
+import {crowTime, getDayMinutesTrade} from "@/request/stock";
 import LineChart from "@/views/components/LineChart.vue";
 
 export default {
-  name: "FundPan",
+  name: "DayMinuteTradePan",
   components: {LineChart},
   props:{
     stockNum:String,
@@ -49,8 +49,8 @@ export default {
     this.queryFund();
   },
   methods:{
-    crow(){
-      testFund({stockNum:this.stockNum}).then(resp=>{
+    crowTime(){
+      crowTime({stockNum:this.stockNum}).then(resp=>{
         this.$notify({
           title: '成功',
           message: '更新成功',
@@ -59,20 +59,13 @@ export default {
       })
     },
     queryFund(){
-      queryFund(this.param).then(resp=>{
-
+      getDayMinutesTrade(this.param).then(resp=>{
         let data = {};
-        data.legend = ["主力", "超大单", "大单","中单","小单","超大单In"]
-        data.x = resp.data.map(e=>e.date)
-        let y=[];
-        y[0] = resp.data.map(e=>e.mainMoneyIn-e.mainMoneyOut);
-        y[1] = resp.data.map(e=>e.superBigMoneyIn-e.superBigMoneyOut);
-        y[2] = resp.data.map(e=>e.bigMoneyIn-e.bigMoneyOut);
-        y[3] = resp.data.map(e=>e.middleMoneyIn-e.middleMoneyOut);
-        y[4] = resp.data.map(e=>e.smallMoneyIn-e.smallMoneyOut);
-        y[5] = resp.data.map(e=>e.superBigMoneyIn);
-        data.y = y;
-
+        data.x = resp.data.map(e=>e.key);
+        let y = [];
+        y = resp.data.map(e=>e.value);
+        data.y = [y];
+        console.log(data)
         this.data = data;
       })
     }

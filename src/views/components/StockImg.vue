@@ -1,7 +1,21 @@
 <template>
   <div>
     <div v-if="type != 'NEW'" class="imgDiv" style="position: relative">
-      <img @mousemove="mouthMove()" @mouseout="mouseOut" width="100%" :src="getSrc"/>
+      <FundPan v-if="type == 'FUND'" :stock-num="stockNum"
+               :start-date="defaultStart || start"
+               :end-date="defaultEnd || end"/>
+      <div v-else-if="type == 'TRADE'" style="height: 500px">
+        <TradeDetailChart
+
+            :fix-id="'img'"
+            :stock-num="stockNum"
+            :date="nowDate">
+        </TradeDetailChart>
+      </div>
+      <DayMinuteTradePan v-else-if="type == 'MINUTE'" :stock-num="stockNum"
+                          :start-date="defaultStart || start"
+                          :end-date="defaultEnd || end"/>
+      <img v-else-if="type != 'FUND'" @mousemove="mouthMove()" @mouseout="mouseOut" width="100%" :src="getSrc"/>
       <div v-if="rightX != null" class="pp" :style="{right: rightX+'px'}">
       </div>
       <div class="pp ppx" :style="{left: (ppx||opPpx)+'px'}">
@@ -13,6 +27,9 @@
         <span @click="changeImg('TIME')">time</span>
         <span @click="changeImg('FIVE')">five</span>
         <span @click="changeImg('NEW')">NEW</span>
+        <span @click="changeImg('FUND')">FUND</span>
+        <span @click="changeImg('MINUTE')">MINUTE</span>
+        <span @click="changeImg('TRADE')">TRADE</span>
         <DetailLink :stock-num="stockNum">详情</DetailLink>
         <FavoriteSpan :stock-num="stockNum" :is-favorite="opFavorite" :change="(op)=>{this.opFavorite = op}"/>
         <StockDetailPop
@@ -36,6 +53,7 @@
         <span @click="changeImg('TIME')">time</span>
         <span @click="changeImg('FIVE')">five</span>
         <span @click="changeImg('NEW')">NEW</span>
+        <span @click="changeImg('FUND')">FUND</span>
         <span><a target="_blank" :href="'http://quote.eastmoney.com/concept/'+getStockNum2()+'.html#'">详情</a></span>
         <FavoriteSpan :stock-num="stockNum" :is-favorite="opFavorite" :change="(op)=>{this.opFavorite = op}"/>
         <StockDetailPop
@@ -58,10 +76,15 @@ import StockKLine from "@/views/components/StockKLine";
 import globalFunction from "@/globalFunction";
 import DetailLink from "@/views/components/DetailLink";
 import StockNote from "@/views/components/StockNote.vue";
+import FundPan from "@/views/components/FundPan.vue";
+import DayMinuteTradePan from "@/views/components/DayMinuteTradePan.vue";
+import TradeDetailChart from "@/views/components/TradeDetailChart.vue";
 
 export default {
   name: "StockImg",
-  components: {StockNote, DetailLink, StockKLine, StockDetailPop, FavoriteSpan},
+  components: {
+    TradeDetailChart,
+    DayMinuteTradePan, FundPan, StockNote, DetailLink, StockKLine, StockDetailPop, FavoriteSpan},
   props: {
     stockNum: String,
     rightX: Number,
@@ -70,7 +93,8 @@ export default {
     mouseMoveNotice: Function,
     allType: null,
     defaultStart:String,
-    defaultEnd:String
+    defaultEnd:String,
+    nowDate:String
   },
   data() {
     return {
@@ -177,7 +201,7 @@ export default {
   background-color: white;
   padding: 10px 0 0 10px;
   word-wrap: normal;
-  word-break: keep-all;
+  word-break: break-all;
   white-space: normal;
 }
 

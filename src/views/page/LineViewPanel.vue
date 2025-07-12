@@ -12,6 +12,11 @@
             placeholder="请输入内容"
             v-model="textContent">
         </el-input>
+        <el-select v-model="type" @change="stockListChange">
+          <el-option value="line" label="线条"></el-option>
+          <el-option value="bar" label="柱图"></el-option>
+
+        </el-select>
       </div>
       <div style="height: 600px;width: 100%">
         <LineChart :data="this.data"/>
@@ -41,7 +46,8 @@ export default {
   data() {
     return {
       data:null,
-      textContent:null
+      textContent:null,
+      type:'line'
     }
   },
   mounted() {
@@ -59,7 +65,7 @@ export default {
       for (let i = 1;i< length;i++){
         y.push(lines.map(e => e.split(/[ ,\n\r]/g)[i]))
       }
-      this.data = {x: x, y: y}
+      this.data = {x: x, y: y,type:this.type}
       console.log(this.data)
     }
   }

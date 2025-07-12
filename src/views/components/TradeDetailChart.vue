@@ -75,8 +75,8 @@ export default {
           },
           {
             scale:true,
-            min:this.preClose*0.89,
-            max:this.preClose*1.11,
+            min:0,
+            max:0,
             name: "price",
             type: 'value',
             splitNumber: 5,
@@ -164,7 +164,11 @@ export default {
         date:this.date
       }
       tradeDetail(p).then(resp=>{
-        let data = JSON.parse(resp.data.content);
+        if (resp.data == null) {
+          this.kChart.clear();
+          return;
+        }
+        let data = JSON.parse(resp.data.stockTradeDetailDO.content);
         data = data.map(e=>e.split(","))
             .filter(e=>e[0]>"09:29:00")
         this.data = data;
@@ -180,13 +184,13 @@ export default {
           this.options.series[1].data = data.map(e=>{return {
             value:e[1]
           }})
-          this.options.series[2].markLine.data[0].yAxis=this.preClose;
+          this.options.series[2].markLine.data[0].yAxis=resp.data.preClose;
 
           if (this.kChart.getOption() != null){
             this.options.dataZoom = this.kChart.getOption().dataZoom;
           }
-          this.options.yAxis[1].min = this.preClose*0.89;
-          this.options.yAxis[1].max = this.preClose*1.11;
+          this.options.yAxis[1].min = resp.data.preClose*0.89;
+          this.options.yAxis[1].max = resp.data.preClose*1.11;
 
           this.kChart.clear();
           this.kChart.setOption(this.options,false);
@@ -206,13 +210,13 @@ export default {
           this.options.series[1].data = data.map(e=>{return {
             value:e[1]
           }})
-          this.options.series[2].markLine.data[0].yAxis=this.preClose;
+          this.options.series[2].markLine.data[0].yAxis=resp.data.preClose;
 
           if (this.kChart.getOption() != null){
             this.options.dataZoom = this.kChart.getOption().dataZoom;
           }
-          this.options.yAxis[1].min = this.preClose*0.89;
-          this.options.yAxis[1].max = this.preClose*1.11;
+          this.options.yAxis[1].min = resp.data.preClose*0.89;
+          this.options.yAxis[1].max = resp.data.preClose*1.11;
 
           this.kChart.clear();
           this.kChart.setOption(this.options,false);
@@ -250,13 +254,13 @@ export default {
           this.options.series[1].data = data.map(e=>{return {
             value:e[1]
           }})
-          this.options.series[2].markLine.data[0].yAxis=this.preClose;
+          this.options.series[2].markLine.data[0].yAxis=resp.data.preClose;
 
           if (this.kChart.getOption() != null){
             this.options.dataZoom = this.kChart.getOption().dataZoom;
           }
-          this.options.yAxis[1].min = this.preClose*0.89;
-          this.options.yAxis[1].max = this.preClose*1.11;
+          this.options.yAxis[1].min = resp.data.preClose*0.89;
+          this.options.yAxis[1].max = resp.data.preClose*1.11;
 
           this.kChart.clear();
           this.kChart.setOption(this.options,false);

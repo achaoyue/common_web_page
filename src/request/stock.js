@@ -30,6 +30,9 @@ export const queryIndex = p => get("stock/queryIndex", p)
 export const addNote = p => post("/stock/note/add", p)
 export const queryNote = p => get("/stock/note/query", p)
 export const queryFund = p => get("/stock/queryFund", p)
+export const testFund = p => get("/stock/testFund", p)
+export const crowTime = p => get("/stock/crowTime", p)
+export const getDayMinutesTrade = p => get("/stock/getDayMinutesTrade", p)
 
 
 

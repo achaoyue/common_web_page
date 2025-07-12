@@ -57,6 +57,13 @@
             inactive-color="#ff4949">
             </el-switch>
         </div>
+        <div class="time_block" v-if="selectId == 'STOCK_NOTE'">
+          全量:<el-switch
+            v-model="param.noteAll"
+            active-color="#13ce66"
+            inactive-color="#ff4949">
+        </el-switch>
+        </div>
         <div class="time_block" v-if="selectId == 'UP_DOWN_SELECT'">
           序列:<div style="display: inline-block;width: 250px"><el-input type="text" v-model="param.series"/></div>
         </div>
@@ -91,6 +98,9 @@
           <el-radio-button label="TIME"></el-radio-button>
           <el-radio-button label="FIVE"></el-radio-button>
           <el-radio-button label="NEW"></el-radio-button>
+          <el-radio-button label="FUND"></el-radio-button>
+          <el-radio-button label="MINUTE"></el-radio-button>
+          <el-radio-button label="TRADE"></el-radio-button>
         </el-radio-group>
       </div>
       <div style="text-align: left" v-if="allType == 'NEW'">
@@ -154,6 +164,7 @@
               :default-start="startDate"
               :default-end="endDate"
               :favorite = item.favorite
+              :now-date = "date"
               :mouse-move-notice="mouseChange"></StockImg>
           <div>{{item.belongPlate}}</div>
 

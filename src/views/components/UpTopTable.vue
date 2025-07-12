@@ -25,8 +25,20 @@
 <!--    </div>-->
     <div>
       <div class="item_row" v-for="item of resultStockUpDay" :key="item.k">
-        <div class="item_col" style="width: 100px">{{item.k}}</div>
-        <div class="item_col" :style="{backgroundColor:day=='1'?'#f11ef1':'#aabbcc'}" v-for="(day,idx) in item.v" :key="idx"></div>
+        <div class="item_col" style="width: 150px">
+          <StockDetailPop
+              :key="item.k+'_detail_pop'"
+              :stock-num="calcStockNum(item.k)"
+              :default-start-date="param.startDate"
+              :default-end-date="param.endDate" >
+            {{item.k}}
+          </StockDetailPop>
+
+        </div>
+        <div class="item_col"
+             @click="showDay(item,idx)"
+             :style="{backgroundColor:day=='1'?'#f11ef1':'#aabbcc'}" v-for="(day,idx) in item.v"
+             :key="idx"></div>
       </div>
     </div>
 
@@ -36,9 +48,11 @@
 <script>
 import {upTopList} from "@/request/stock";
 import moment from "moment";
+import StockDetailPop from "@/views/components/StockDetailPop";
 
 export default {
   name: "UpTopTable",
+  components: {StockDetailPop},
   data:function (){
     return {
       resultStockUpDay:{},
@@ -54,7 +68,12 @@ export default {
     this.queryList();
   },
   methods:{
-
+    calcStockNum(str){
+      return str.split("-")[1];
+    },
+    showDay(item,idx){
+      this.$message(item.day[idx]);
+    },
     queryList(){
       upTopList(this.param).then(resp=>{
         let data = resp.data;
@@ -75,6 +94,7 @@ export default {
 
         //股票每日是否涨停
         let stockUpDayMap = {};
+        let stockUpDayStrMap = {};
         let i = this.param.endDate;
         for(;i>=this.param.startDate;i = moment(i).subtract(1,'days').format("YYYY-MM-DD")){
 
@@ -90,6 +110,10 @@ export default {
             }else {
               stockUpDayMap[key]+="1";
             }
+            if (stockUpDayStrMap[key]==null){
+              stockUpDayStrMap[key] = [];
+            }
+            stockUpDayStrMap[key].push(i)
           }
         }
 
@@ -101,7 +125,8 @@ export default {
         let resultStockUpDay = stockNames.map(e=>{
           return {
             k:e,
-            v:stockUpDayMap[e].split('')
+            v:stockUpDayMap[e].split(''),
+            day:stockUpDayStrMap[e]
           }
         })
 

@@ -11,7 +11,8 @@ import globalFunction from "@/globalFunction";
   x:[]
   y:[[]]
   legend:[],
-  color:[]
+  color:[],
+  type:'bar'
 }*/
 
 export default {
@@ -94,8 +95,8 @@ export default {
   },
   methods:{
     initK(){
-      console.log(this.data);
-      if (!this.data){
+
+      if (!this.data || !this.data.x || !this.data.y){
         this.kChart.clear();
         return;
       }
@@ -111,10 +112,11 @@ export default {
       }
 
       let i = 0;
+      let type = this.data.type ? this.data.type : 'line';
       this.options.series = this.data.y.map(e=>{
         return {
           data: e,
-          type: 'line',
+          type: type,
           animation:false,
           name: this.data.legend ? this.data.legend[i++] : ""+i++
         }

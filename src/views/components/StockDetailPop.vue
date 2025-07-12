@@ -1,6 +1,9 @@
 <template>
   <span>
-    <span @click="clickShowDia">detail</span>
+    <span class="btn_c" v-if="!$slots.default" @click="clickShowDia">detail</span>
+    <span class="btn_c" v-if="$slots.default" @click="clickShowDia">
+      <slot></slot>
+    </span>
     <el-dialog
         style="text-align: left"
         width="90%"
@@ -28,6 +31,7 @@
       <div style="width: 50%;display: inline-block">
         <StockKLine fix-id="detailPop" :ref="stockNum" :stock-num="stockNum" :start-date="startDate || defaultStartDate" :end-date="endDate || defaultEndDate"/>
         <FundPan v-if="show" :stock-num="stockNum" :start-date="this.startDate" :end-date="this.endDate"/>
+<!--        <DayMinuteTradePan v-if="show" :stock-num="stockNum" :start-date="this.startDate" :end-date="this.endDate"/>-->
         <div style="height: 500px">
           <TradeDetailChart
               :stock-num="stockNum"
@@ -98,10 +102,13 @@ import LineChart from "@/views/components/LineChart";
 import TradeDetailChart from "@/views/components/TradeDetailChart";
 import StockNote from "@/views/components/StockNote.vue";
 import FundPan from "@/views/components/FundPan.vue";
+import DayMinuteTradePan from "@/views/components/DayMinuteTradePan.vue";
 
 export default {
   name: "StockDetailPop",
-  components: {FundPan, StockNote, TradeDetailChart, LineChart, BarChart, FavoriteSpan, DetailLink, StockKLine},
+  components: {
+    DayMinuteTradePan,
+    FundPan, StockNote, TradeDetailChart, LineChart, BarChart, FavoriteSpan, DetailLink, StockKLine},
   data() {
     return {
       noteShow:false,
@@ -136,6 +143,9 @@ export default {
     endDate() {
       this.queryStockDetail();
     },
+    defaultEndDate(){
+      this.endDate = this.defaultEndDate;
+    }
   },
   computed:{
     computeOverRate(){
@@ -260,5 +270,10 @@ export default {
 </script>
 
 <style scoped>
-
+  .btn_c{
+    border-bottom: #000000 1px solid;
+  }
+  .btn_c:hover {
+    cursor: pointer;
+  }
 </style>
